@@ -672,7 +672,9 @@ class Function(FunctionBase):
             mask_set = set()
             task_event_list = task_value['TaskEventRef']
             for ev in task_event_list:
-                ev_mask = event_dict[ev]["OsEventMask"]["Value"]
+                # OsEventMask is optional; AutoC/partial configs may omit it — auto-assign below.
+                ev_node = event_dict.get(ev) or {}
+                ev_mask = (ev_node.get("OsEventMask") or {}).get("Value")
                 if ev_mask is not None and ev_mask != "":
                     task_event_cfg[ev] = int(ev_mask)
                     mask_set.add(int(ev_mask))
@@ -709,11 +711,14 @@ class Function(FunctionBase):
     @pass_context
     def check_isq_dispatch_method_is_level(context):
         target = Function.get_target(context)
-        if target in ("AURIX2G_TC397"):
+        if target in ("AURIX2G_TC397",):
             return True
-        elif target in ("FC7300F8MDT"):
+        elif target in ("FC7300F8MDT",):
             return False
         elif target in ("E3650", "J6E"):
+            return False
+        elif target in ("PC_Common",):
+            # Local fix: PC_Common (mcal_pc, vs20xx) dispatches ISRs by vector id, not TriCore level.
             return False
         else:
             raise TypeError("没有适配的架构！")
@@ -726,17 +731,17 @@ class Function(FunctionBase):
         compiler = context['sys_cfg']['compiler']
         #Make sure the target chip option exists in the compiler, otherwise add it
         if compiler == "tasking":
-            if target in ("AURIX2G_TC397"):
+            if target in ("AURIX2G_TC397",):
                 ret.append('CONFIG_TRICORE_TOOLCHAIN_TASKING=y')
         elif compiler == "gcc":
-            if target in ("AURIX2G_TC397"):
+            if target in ("AURIX2G_TC397",):
                 ret.append('CONFIG_TRICORE_TOOLCHAIN_GNU=y')
-            elif target in ("FC7300F8MDT"):
+            elif target in ("FC7300F8MDT",):
                 ret.append('CONFIG_ARM_TOOLCHAIN_GNU=y')
-            elif target in ("E3650"):
+            elif target in ("E3650",):
                 ret.append('CONFIG_ARM_TOOLCHAIN_GNU=y')
         elif compiler == "ghs":
-            if target in ("J6E"):
+            if target in ("J6E",):
                 ret.append('CONFIG_ARM_TOOLCHAIN_GHS=y')
         return ret
 
@@ -746,9 +751,20 @@ class Function(FunctionBase):
         isr_counter = {}
         counter_list = Function.get_os_module_list(context, "/Os/OsCounter")
         for counter_name, counter_value in counter_list.items():
-            if "OsDriver" in counter_value:
-                isr_name = utils.get_last_item(counter_value["OsDriver"]["OsIsrRef"]["ValueRef"])
-                isr_counter.update({isr_name : counter_name})
+            # OsIsrRef only required for HARDWARE counters; SOFTWARE / incomplete
+            # OsDriver must not KeyError — skip when ref omitted (verify catches HARDWARE gaps).
+            driver = counter_value.get("OsDriver")
+            if not isinstance(driver, dict):
+                continue
+            isr_node = driver.get("OsIsrRef")
+            if not isinstance(isr_node, dict):
+                continue
+            isr_ref = isr_node.get("ValueRef")
+            if not isr_ref or isr_ref in ("", "<empty>"):
+                continue
+            isr_name = utils.get_last_item(isr_ref)
+            if isr_name:
+                isr_counter.update({isr_name: counter_name})
         return isr_counter
 
     @staticmethod
@@ -782,11 +798,15 @@ class Function(FunctionBase):
                 IsrRef = ""
                 CounterMaxInternalTickValue = 2 * CounterMaxAllowedValue + 1
             else:
+                # HARDWARE: OsIsrRef required (Os016011 verify FAIL if missing). Soft .get
+                # so force-generate does not KeyError on incomplete OsDriver.
                 TimerType = "TIMERTYPE_HIGH_RESOLUTION"
                 if CounterMaxAllowedValue != 1073741823:
                     CounterMaxAllowedValue = 1073741823
                 CounterTicksPerBase = 1
-                IsrRef = utils.get_last_item(counter_value["OsDriver"]["OsIsrRef"]["ValueRef"])
+                driver = counter_value.get("OsDriver") if isinstance(counter_value.get("OsDriver"), dict) else {}
+                isr_node = driver.get("OsIsrRef") if isinstance(driver.get("OsIsrRef"), dict) else {}
+                IsrRef = utils.get_last_item(isr_node.get("ValueRef"))
                 CounterMaxInternalTickValue = 4 * CounterMaxAllowedValue + 3
             CounterAccessApp = utils.resolve_ref_list('OsCounterAccessingApplication', counter_value)
             if counter_name in action_cnt:

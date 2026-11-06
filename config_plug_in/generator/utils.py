@@ -53,11 +53,15 @@ def resolve_ref_list(ref_type, cfg_dict):
     ref_list = list()
     # When only one reference is configurated,
     # the ValueRef is an instance of str instead of list.
-    if isinstance(cfg_dict[ref_type]["ValueRef"], str):
-        ref_list.append(get_last_item(
-            cfg_dict[ref_type]["ValueRef"]))
-    elif isinstance(cfg_dict[ref_type]["ValueRef"], list):
-        for item_dir in cfg_dict[ref_type]["ValueRef"]:
+    # Missing optional refs (e.g. OsTaskEventRef on BASIC tasks) mean empty.
+    ref_entry = cfg_dict.get(ref_type)
+    if not isinstance(ref_entry, dict) or "ValueRef" not in ref_entry:
+        return ref_list
+    value_ref = ref_entry["ValueRef"]
+    if isinstance(value_ref, str):
+        ref_list.append(get_last_item(value_ref))
+    elif isinstance(value_ref, list):
+        for item_dir in value_ref:
             ref_list.append(get_last_item(item_dir))
     return sorted(list(set(ref_list)), key=lambda x: (len(x), x.lower()))
 

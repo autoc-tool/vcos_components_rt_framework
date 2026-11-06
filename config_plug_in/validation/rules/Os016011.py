@@ -72,9 +72,24 @@ class Os016011Rule(BasicRule):
                     else:
                         hardware_timer_name = OsRuleutils().get_last_item_verify(os_instance.get("OsDriver",{}).get("OsHardwareTimerChannelRef",{}).get("ValueRef",""))
                         isr_name = OsRuleutils().get_last_item_verify(os_instance.get("OsDriver",{}).get("OsIsrRef",{}).get("ValueRef",""))
+                        # HARDWARE codegen (get_counter_cfg / get_isr_counter) hard-depends on OsIsrRef.
+                        # Prefer clear verify FAIL over KeyError at generate when leaf omitted.
+                        if not isr_name or isr_name in ("", "<empty>", None):
+                            validation_data.update({"counter_name": os_key})
+                            validation_data.update({
+                                "error_detail": (
+                                    f"HARDWARE counter {os_key} missing OsDriver/OsIsrRef; "
+                                    f"configure OsIsrRef (codegen requires it; SOFTWARE counters must not use OsDriver)"
+                                )
+                            })
+                            break
                         hardware_channel_name = publish_info.get(hardware_timer_name,{}).get("OsHardWareTimerChannel",{}).get("Value","")
                         hardware_frequency = publish_info.get(hardware_timer_name,{}).get("OsHardWareTimerClockFrequency",{}).get("Value","")
                         second_per_tick = os_instance.get("OsSecondsPerTick",{}).get("Value","")
+                        if not hardware_frequency:
+                            validation_data.update({"counter_name": os_key})
+                            validation_data.update({"error_detail": "hardware-driven counter missing OsHardwareTimerChannelRef / published timer info"})
+                            break
                         if second_per_tick > float(format(0.000001/hardware_frequency, '.15f')) or second_per_tick < 0.000001/hardware_frequency:
                             validation_data.update({"counter_name": os_key})
                             validation_data.update({"second_per_tick": format(0.000001/hardware_frequency, '.15f')})
