@@ -1,0 +1,373 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Os Ioc Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include "Os.h"
+#include "rtfw_ioc.h"
+#include "ioc_cfg.h"
+#include "rtfw_application.h"
+#include "application_cfg.h"
+#include "rtfw_spinlock.h"
+#include "spinlock_cfg.h"
+#include "rtfw_hook.h"
+#include "hook_cfg.h"
+#include "rtfw_compiler_cfg.h"
+
+{%- set ioc_config, ioc_headers = get_ioc_cfg() %}
+{%- set app_hook_cfg = get_app_hook_cfg() %}
+{%- set core_cfg = get_core_configs() %}
+
+/* User file includes */
+{%- if ioc_headers %}
+  {%- for header in ioc_headers %}
+#include "{{header}}"
+  {%- endfor %}
+{%- endif %}
+
+{%- for ioc_name in ioc_config %}
+  {%- if "OsIocDataProperties" in ioc_config[ioc_name] %}
+    {%- set dataType = ioc_config[ioc_name]["OsIocDataProperties"]["datatype"] %}
+    {%- set dataType_atomicity = ioc_config[ioc_name]["OsIocDataProperties"]["OsIocData_Atomic"] %}
+    {%- set baseDataType = get_ioc_base_datatype(dataType) %}
+    {%- set initValue = ioc_config[ioc_name]["OsIocDataProperties"]["OsIocInitValue"] %}
+    {%- if not initValue %}
+      {%- set initValue = 0 %}
+    {%- endif %}
+  {%- else: %}
+    {%- set dataType = "uint8" %}
+    {%- set baseDataType = "uint8" %}
+    {%- set initValue = 0 %}
+  {%- endif %}
+
+  {%- if "OsIocBufferLength" in ioc_config[ioc_name] %}
+    {%- set queuelen = ioc_config[ioc_name]["OsIocBufferLength"] %}
+  {%- else: %}
+    {%- set queuelen = 0 %}
+  {%- endif %}
+
+  {%- set send_app_set = get_ioc_send_app_set(ioc_config[ioc_name]) %}
+  {%- set send_app_cnt = get_ioc_set_cnt(send_app_set) %}
+  {%- set send_core_set = get_ioc_core_set(send_app_set) %}
+  {%- set send_core_cnt = get_ioc_set_cnt(send_core_set) %}
+  {%- set send_app_mask = get_access_app_mask(send_app_set, index_size=38) %}
+
+  {%- set receive_app_set = get_ioc_receive_app_set(ioc_config[ioc_name]) %}
+  {%- set receive_app_cnt = get_ioc_set_cnt(receive_app_set) %}
+  {%- set receive_core_set = get_ioc_core_set(receive_app_set) %}
+  {%- set receive_core_cnt = get_ioc_set_cnt(receive_core_set) %}
+  {%- set receive_app_mask = get_access_app_mask(receive_app_set, index_size=38) %}
+
+  {%- set all_core_cnt = get_ioc_unique_core_cnt(send_core_set, receive_core_set) %}
+  {%- if all_core_cnt >= 2 %}
+    {%- set memmap_section = "OS_GLOBAL_BSS_SECTION" %}
+  {%- else %}
+    {%- set all_core_set = (send_core_set|list) + (receive_core_set|list) %}
+    {%- set core_id = all_core_set[0].split('_')[-1] %}
+    {%- set memmap_section = "OS_SYSTEMAPPLICATION_CORE" ~ core_id ~ "_BSS_SECTION" %}
+  {%- endif %}
+
+  {%- if queuelen == 0 : %}
+    {%- set read_write_lockmode = "OS_IOC_GUARD_NONE" %}
+    {%- set read_write_spinlockid = "OS_SPINLOCK_CNT" %}
+
+    {%- if all_core_cnt >= 2:%}
+      {%- if (baseDataType not in ["uint8", "sint8", "boolean","uint16", "sint16", "uint32", "sint32", "float32"]) and dataType_atomicity == False: %}
+        {%- set read_write_lockmode = "OS_IOC_GUARD_ALL" %}
+        {%- set read_write_spinlockid = "OS_IOC_SPINLOCK_" + ioc_name.upper() + "_ID" %}
+      {%- endif %}
+    {%- else: %}
+      {%- if (baseDataType not in ["uint8", "sint8", "boolean","uint16", "sint16", "uint32", "sint32", "float32"]): %}
+        {%- set read_write_lockmode = "OS_IOC_GUARD_DISABLE_INTERRUPTS" %}
+      {%- endif %}
+    {%- endif %}
+
+#define OS_START_SEC_CODE
+#include "rtfw_memmap.h"
+static FUNC(void, OS_CODE) os_ioc_copy_{{ioc_name}} ( void const * source, void * target );
+static FUNC(void, OS_CODE) os_ioc_init_{{ioc_name}} ( void * data );
+#define OS_STOP_SEC_CODE
+#include "rtfw_memmap.h"
+
+static locate_data({{memmap_section}}) {{dataType}} os_ioc_{{ioc_name}};
+
+  {%- set filtered_receivers = ioc_config[ioc_name].OsIocReceiverProperties | selectattr('OsIocReceiverPullCB') | list %}
+  {%- set ioc_call_back_num = filtered_receivers | length %}
+  {%- if ioc_call_back_num > 0 %}
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+CONSTP2CONST(os_ioc_call_back_ref_t, OS_CONST, AUTOMATIC) {{ioc_name}}_call_back_refs[{{ioc_call_back_num}}] =
+{
+    {%- for receiver in filtered_receivers %}
+      {%- if receiver.OsIocReceivingOsApplicationRef %}
+        {%- set target_app_name = receiver.OsIocReceivingOsApplicationRef[0] %}
+        {%- if target_app_name in app_hook_cfg and receiver.OsIocReceiverPullCB in app_hook_cfg[target_app_name] %}
+    &HOOKCFGVAR({{ app_hook_cfg[target_app_name][receiver.OsIocReceiverPullCB]['hook_id'] }}),
+        {%- endif %}
+      {%- endif %}
+    {%- endfor %}
+};
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+  {%- endif %}
+
+extern const os_ioc_write_cfg_t IOCWRITECFGVAR({{ioc_name}});
+extern const os_ioc_read_cfg_t  IOCREADCFGVAR({{ioc_name}});
+
+DeclareIocWrite(OS_CONST_SECTION, {{memmap_section}}, {{ioc_name}}) = {
+    {
+        /* .obj_desc              */ (os_ioc_inst_t *)&IOCWRITEOBJVAR({{ioc_name}}),
+        /* .ioc_id                */ OS_IOC_WRITE_{{ioc_name.upper()}}_ID,
+        /* .ioc_type              */ ioc_write_type,
+        /* .lock_type             */ {{read_write_lockmode}},
+#ifdef CONFIG_RT_FRAMEWORK_ACCESSCHECK
+        /* .accessing_appl_mask   */ {{send_app_mask}},
+#endif
+#ifdef CONFIG_RT_FRAMEWORK_SPINLOCK
+        /* .spin_id               */ {{read_write_spinlockid}},
+#endif
+    },
+    /* .read                     */ &IOCREADCFGVAR({{ioc_name}}),
+    /* .data                     */ (void *)(&os_ioc_{{ioc_name}}),
+    /* .copy_cbk                 */ os_ioc_copy_{{ioc_name}},
+    /* .init_cbk                 */ os_ioc_init_{{ioc_name}},
+    /* .callbacks                */ { {{ioc_call_back_num}}, {% if ioc_call_back_num > 0 %}{{ ioc_name }}_call_back_refs{% else %}NULL_PTR{% endif %} },
+};
+
+DeclareIocRead(OS_CONST_SECTION, {{memmap_section}}, {{ioc_name}}) = {
+    {
+        /* .obj_desc              */ (os_ioc_inst_t *)&IOCREADOBJVAR({{ioc_name}}),
+        /* .ioc_id                */ OS_IOC_READ_{{ioc_name.upper()}}_ID,
+        /* .ioc_type              */ ioc_read_type,
+        /* .lock_type             */ {{read_write_lockmode}},
+#ifdef CONFIG_RT_FRAMEWORK_ACCESSCHECK
+        /* .accessing_appl_mask   */ {{receive_app_mask}},
+#endif
+#ifdef CONFIG_RT_FRAMEWORK_SPINLOCK
+        /* .spin_id               */ {{read_write_spinlockid}},
+#endif
+    },
+    /* .write                    */ &IOCWRITECFGVAR({{ioc_name}}),
+    /* .data                     */ (void *)(&os_ioc_{{ioc_name}}),
+    /* .copy_cbk                 */ os_ioc_copy_{{ioc_name}},
+};
+
+#define OS_START_SEC_CODE
+#include "rtfw_memmap.h"
+static FUNC(void, OS_CODE) os_ioc_copy_{{ioc_name}} ( void const * source, void * target )
+{
+  {%- if baseDataType in ["uint8","sint8","boolean","uint16","sint16","uint32","sint32","float32","uint64","sint64","float64"] %}
+    *(({{dataType}} *)target) = *(({{dataType}} *)source);
+  {%- else %}
+    (void)memcpy((target), (source), sizeof({{dataType}}));
+  {%- endif %}
+}
+static FUNC(void, OS_CODE) os_ioc_init_{{ioc_name}} ( void* data )
+{
+  {%- if baseDataType in ["uint8","sint8","boolean","uint16","sint16","uint32","sint32","float32","uint64","sint64","float64"] %}
+    (*(({{dataType}}*)data)) = {{initValue}};
+  {%- else %}
+    static const {{dataType}} init_value = {{initValue}};
+    (void)memcpy(data, &init_value, sizeof(init_value));
+  {%- endif %}
+}
+#define OS_STOP_SEC_CODE
+#include "rtfw_memmap.h"
+
+  {%- else: %}
+    {%- set queuelen = queuelen + 1 %}
+    {%- set send_lockmode = "OS_IOC_GUARD_NONE" %}
+    {%- set send_spinlockid = "OS_SPINLOCK_CNT" %}
+    {%- set receive_lockmode = "OS_IOC_GUARD_NONE" %}
+    {%- set receive_spinlockid = "OS_SPINLOCK_CNT" %}
+
+    {%- if send_app_cnt >= 2 %}
+      {%- if send_core_cnt >= 2 %}
+        {%- set send_lockmode = "OS_IOC_GUARD_ALL" %}
+        {%- set send_spinlockid = "OS_IOC_SEND_SPINLOCK_" + ioc_name.upper() + "_ID" %}
+      {%- else %}
+        {%- set send_lockmode = "OS_IOC_GUARD_DISABLE_INTERRUPTS" %}
+      {%- endif %}
+    {%- endif %}
+
+    {%- if receive_app_cnt >= 2 %}
+      {%- if receive_core_cnt >= 2 %}
+        {%- set receive_lockmode = "OS_IOC_GUARD_ALL" %}
+        {%- set receive_spinlockid = "OS_IOC_RECEIVE_SPINLOCK_" + ioc_name.upper() + "_ID" %}
+      {%- else %}
+        {%- set receive_lockmode = "OS_IOC_GUARD_DISABLE_INTERRUPTS" %}
+      {%- endif %}
+    {%- endif %}
+
+    {%- set basic_datatype = (baseDataType in ["uint8","uint16","uint32"]) %}
+
+static locate_data({{memmap_section}}) {{dataType}} os_ioc_{{ioc_name}}[{{queuelen}}];
+
+    {%- set filtered_receivers = ioc_config[ioc_name].OsIocReceiverProperties | selectattr('OsIocReceiverPullCB') | list %}
+    {%- set ioc_call_back_num = filtered_receivers | length %}
+    {%- if ioc_call_back_num > 0 %}
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+CONSTP2CONST(os_ioc_call_back_ref_t, OS_CONST, AUTOMATIC) {{ioc_name}}_call_back_refs[{{ioc_call_back_num}}] =
+{
+      {%- for receiver in filtered_receivers %}
+        {%- if receiver.OsIocReceivingOsApplicationRef %}
+          {%- set target_app_name = receiver.OsIocReceivingOsApplicationRef[0] %}
+          {%- if target_app_name in app_hook_cfg and receiver.OsIocReceiverPullCB in app_hook_cfg[target_app_name] %}
+    &HOOKCFGVAR({{ app_hook_cfg[target_app_name][receiver.OsIocReceiverPullCB]['hook_id'] }}),
+          {%- endif %}
+        {%- endif %}
+      {%- endfor %}
+};
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+    {%- endif %}
+
+    {%- if not basic_datatype %}
+#define OS_START_SEC_CODE
+#include "rtfw_memmap.h"
+static FUNC(void, OS_CODE) IocSendBlk_{{ioc_name}}_Callback (void * buffer, uint8 idx, void const * data);
+static FUNC(void, OS_CODE) IocReceiveBlk_{{ioc_name}}_Callback (void const * buffer, uint8 idx, void * data_ref);
+#define OS_STOP_SEC_CODE
+#include "rtfw_memmap.h"
+    {%- endif %}
+
+extern const os_ioc_send_cfg_t IOCSENDCFGVAR({{ioc_name}});
+extern const os_ioc_recv_cfg_t IOCRECEIVECFGVAR({{ioc_name}});
+
+DeclareIocSend(OS_CONST_SECTION, {{memmap_section}}, {{ioc_name}}) = {
+    {
+        /* .obj_desc              */ (os_ioc_inst_t *)&IOCSENDOBJVAR({{ioc_name}}),
+        /* .ioc_id                */ OS_IOC_SEND_{{ioc_name.upper()}}_ID,
+        /* .ioc_type              */ {% if basic_datatype %}
+                                        {%- if baseDataType == "uint8" -%} ioc_send_u8_type
+                                        {%- elif baseDataType == "uint16" -%} ioc_send_u16_type
+                                        {%- else -%} ioc_send_u32_type
+                                        {%- endif -%}
+                                     {% else %} ioc_send_blk_type {% endif %},
+        /* .lock_type             */ {{send_lockmode}},
+#ifdef CONFIG_RT_FRAMEWORK_ACCESSCHECK
+        /* .accessing_appl_mask   */ {{send_app_mask}},
+#endif
+#ifdef CONFIG_RT_FRAMEWORK_SPINLOCK
+        /* .spin_id               */ {{send_spinlockid}},
+#endif
+    },
+    /* .recv                    */ &IOCRECEIVECFGVAR({{ioc_name}}),
+    /* .callbacks               */ { {{ioc_call_back_num}}, {% if ioc_call_back_num > 0 %}{{ ioc_name }}_call_back_refs{% else %}NULL_PTR{% endif %} },
+    /* .write_cbk               */ {% if not basic_datatype %} IocSendBlk_{{ioc_name}}_Callback {% else %} NULL_PTR {% endif %},
+    /* .data                    */ (void *)os_ioc_{{ioc_name}},
+    /* .size                    */ {{queuelen}},
+};
+
+DeclareIocReceive(OS_CONST_SECTION, {{memmap_section}}, {{ioc_name}}) = {
+    {
+        /* .obj_desc              */ (os_ioc_inst_t *)&IOCRECEIVEOBJVAR({{ioc_name}}),
+        /* .ioc_id                */ OS_IOC_RECEIVE_{{ioc_name.upper()}}_ID,
+        /* .ioc_type              */ {% if basic_datatype %}
+                                        {%- if baseDataType == "uint8" -%} ioc_recv_u8_type
+                                        {%- elif baseDataType == "uint16" -%} ioc_recv_u16_type
+                                        {%- else -%} ioc_recv_u32_type
+                                        {%- endif -%}
+                                     {% else %} ioc_recv_blk_type {% endif %},
+        /* .lock_type             */ {{receive_lockmode}},
+#ifdef CONFIG_RT_FRAMEWORK_ACCESSCHECK
+        /* .accessing_appl_mask   */ {{receive_app_mask}},
+#endif
+#ifdef CONFIG_RT_FRAMEWORK_SPINLOCK
+        /* .spin_id               */ {{receive_spinlockid}},
+#endif
+    },
+    /* .send                    */ &IOCSENDCFGVAR({{ioc_name}}),
+    /* .read_cbk                */ {% if not basic_datatype %}IocReceiveBlk_{{ioc_name}}_Callback {% else %} NULL_PTR {% endif %},
+    /* .data                    */ (void *)os_ioc_{{ioc_name}},
+    /* .size                    */ {{queuelen}},
+};
+
+    {%- if not basic_datatype %}
+#define OS_START_SEC_CODE
+#include "rtfw_memmap.h"
+static FUNC(void, OS_CODE) IocSendBlk_{{ioc_name}}_Callback (void * buffer, uint8 idx, void const * data)
+{
+    {{dataType}} * databuffer = ({{dataType}} *)buffer;
+    const {{dataType}} * value = (const {{dataType}} *)data;
+      {%- if baseDataType in ["uint64","sint64","float64"] %}
+    databuffer[idx] = *value;
+      {%- else %}
+    (void)memcpy(&(databuffer[idx]), value, sizeof({{dataType}}));
+      {%- endif %}
+}
+static FUNC(void, OS_CODE) IocReceiveBlk_{{ioc_name}}_Callback (void const * buffer, uint8 idx, void * data_ref)
+{
+    const {{dataType}} * databuffer = (const {{dataType}} *)buffer;
+    {{dataType}} * value = ({{dataType}} *)data_ref;
+      {%- if baseDataType in ["uint64","sint64","float64"] %}
+    *value = databuffer[idx];
+      {%- else %}
+    (void)memcpy(value, &(databuffer[idx]), sizeof({{dataType}}));
+      {%- endif %}
+}
+#define OS_STOP_SEC_CODE
+#include "rtfw_memmap.h"
+    {%- endif %}
+  {%- endif %}
+{%- endfor %}
+
+{%- set core_ioc = get_ioc_cnt_by_core() %}
+{%- for core_val in core_cfg.values() %}
+  {%- set core_key = core_val["core_id"] %}
+  {%- if core_ioc.get(core_key, 0) > 0 %}
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+    {%- set core_id = core_val["core_id"][-1] %}
+CONSTP2CONST(os_ioc_cfg_t, OS_CONST, AUTOMATIC) os_core{{core_id}}_ioc_cfg_ref_table[] = {
+    {%- for ioc_name in ioc_config %}
+      {%- if core_val["core_id"] in ioc_config[ioc_name]["CoreNumber"] %}
+        {%- if "OsIocBufferLength" in  ioc_config[ioc_name] and ioc_config[ioc_name]["OsIocBufferLength"] > 0 %}
+    &(IOCSENDCFGVAR({{ioc_name}}).ioc),
+    &(IOCRECEIVECFGVAR({{ioc_name}}).ioc),
+        {%- else %}
+    &(IOCWRITECFGVAR({{ioc_name}}).ioc),
+    &(IOCREADCFGVAR({{ioc_name}}).ioc),
+        {%- endif %}
+      {%- endif %}
+    {%- endfor %}
+};
+CONST(OsObjIndexType, OS_CONST) os_core{{core_id}}_ioc_cfg_ref_table_size = NELEMENTS(os_core{{core_id}}_ioc_cfg_ref_table);
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+  {%- endif %}
+{%- endfor %}
+
+DeclareRtfwRefTable(OS_CONST_SECTION, ioc, OS_IOC_CNT) = {
+{%- for ioc_name in ioc_config %}
+  {%- if "OsIocBufferLength" in ioc_config[ioc_name] and ioc_config[ioc_name]["OsIocBufferLength"] > 0 %}
+    &(IOCSENDCFGVAR({{ioc_name}}).ioc),
+    &(IOCRECEIVECFGVAR({{ioc_name}}).ioc),
+  {%- else %}
+    &(IOCWRITECFGVAR({{ioc_name}}).ioc),
+    &(IOCREADCFGVAR({{ioc_name}}).ioc),
+  {%- endif %}
+{%- endfor %}
+};
+

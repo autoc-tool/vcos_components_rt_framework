@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Os IpiCall Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#ifndef RT_FRAMEWORK_IPICALL_CFG_H
+#define RT_FRAMEWORK_IPICALL_CFG_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* global Macro Definition */
+/* TODO: read this config from UI*/
+#define QUEUE_DEPTH 5U
+{%- set core_cnt = get_core_cnt() %}
+typedef enum {
+{%- for this_core in range(core_cnt): %}
+    {%- for target_core in range(core_cnt) %}
+        {%- if this_core !=  target_core %}
+    OS_CORE{{this_core}}_IPICALL{{target_core}}_ID,
+        {%- endif %}
+    {%- endfor %}
+{%- endfor %}
+    OS_IPICALL_CNT
+} OS_IPICALLID_DEF;
+/* global type & Structure Definition */
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+{%- set core_cnt = get_core_cnt() %}
+{%- for this_core in range(core_cnt): %}
+extern CONSTP2CONST(os_ipicall_cfg_t, OS_CONST, AUTOMATIC) os_core{{this_core}}_ipicalls_cfg_ref_table[];
+extern CONST(OsObjIndexType, OS_CONST) os_core{{this_core}}_ipicalls_cfg_ref_table_size;
+{%- endfor %}
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+/* global Function Declaration */
+/* global Function Implementation */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif	 /* RT_FRAMEWORK_IPICALL_CFG_H */

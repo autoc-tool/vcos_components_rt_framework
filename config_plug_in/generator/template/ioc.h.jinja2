@@ -1,0 +1,139 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Os Ioc
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#ifndef RT_FRAMEWORK_GEN_IOC_H
+#define RT_FRAMEWORK_GEN_IOC_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Including File */
+#include "Os_Types.h"
+{%- set ioc_config, ioc_headers = get_ioc_cfg() %}
+/* User file includes */
+{%- if ioc_headers %}
+  {%- for header in ioc_headers %}
+#include "{{header}}"
+  {%- endfor %}
+{%- endif %}
+
+/* Global Function Declaration */
+{%- for ioc_name in ioc_config %}
+  {%- if "OsIocDataProperties" in ioc_config[ioc_name] %}
+    {%- set dataType = ioc_config[ioc_name]["OsIocDataProperties"]["datatype"] %}
+    {%- set baseDataType = get_ioc_base_datatype(dataType) %}
+  {%- else %}
+    {%- set dataType = "uint8" %}
+    {%- set baseDataType = "uint8" %}
+  {%- endif %}
+  {%- if "OsIocBufferLength" in ioc_config[ioc_name]%}
+    {%- set queuelen = ioc_config[ioc_name]["OsIocBufferLength"] %}
+  {%- else %}
+    {%- set queuelen = 0 %}
+  {%- endif %}
+
+  {%- set dataType_flag =
+      baseDataType in ["uint8","sint8","boolean",
+                       "uint16","sint16",
+                       "uint32","sint32","float32",
+                       "uint64","sint64","float64"] %}
+
+  {%- set sender_cnt = get_ioc_sender_cnt(ioc_name) %}
+  {%- if queuelen == 0 %}
+    {%- set sender_ns = namespace(default_generated = false) %}
+    {%- for index in range(sender_cnt) %}
+      {%- set sender = ioc_config[ioc_name]["OsIocSenderProperties"][index] %}
+      {%- set sender_id = sender.get("OsIocSenderId") | default(None) %}
+      {%- set sender_id_enabled = sender_cnt > 1 and (sender_id is not none) and (sender_id != '') %}
+      {%- set sender_suffix = "" %}
+      {%- set declare_function = true %}
+      {%- if sender_cnt > 1 %}
+        {%- if sender_id_enabled %}
+          {%- set sender_suffix = "_" ~ sender_id %}
+        {%- elif sender_ns.default_generated %}
+          {%- set declare_function = false %}
+        {%- else %}
+          {%- set sender_ns.default_generated = true %}
+        {%- endif %}
+      {%- endif %}
+      {%- if declare_function %}
+      {%- if dataType_flag %}
+extern Std_ReturnType IocWrite_{{ioc_name}}{{ sender_suffix }} ( {{dataType}} Arg0 );
+      {%- else %}
+extern Std_ReturnType IocWrite_{{ioc_name}}{{ sender_suffix }} ( {{dataType}} *Arg0 );
+      {%- endif %}
+      {%- endif %}
+    {%- endfor %}
+
+    {%- set ns = namespace(receiver_id_empty = false) -%}
+    {%- for index in range(get_ioc_receiver_cnt(ioc_name)) %}
+      {%- set receiver = ioc_config[ioc_name]["OsIocReceiverProperties"][index] %}
+      {%- set receiver_id = receiver.get("OsIocReceiverId") | default(None) %}
+      {%- set receiver_id_enabled = (receiver_id is not none) and (receiver_id != '') %}
+      {%- if receiver_id_enabled %}
+extern Std_ReturnType IocRead_{{ ioc_name }}_{{ receiver_id }} ( {{ dataType }} *Arg0 );
+      {%- elif not ns.receiver_id_empty %}
+extern Std_ReturnType IocRead_{{ ioc_name }} ( {{ dataType }} *Arg0 );
+        {%- set ns.receiver_id_empty = true %}
+      {%- endif %}
+    {%- endfor %}
+
+  {%- else %}
+    {%- set sender_ns = namespace(default_generated = false) %}
+    {%- for index in range(sender_cnt) %}
+      {%- set sender = ioc_config[ioc_name]["OsIocSenderProperties"][index] %}
+      {%- set sender_id = sender.get("OsIocSenderId") | default(None) %}
+      {%- set sender_id_enabled = sender_cnt > 1 and (sender_id is not none) and (sender_id != '') %}
+      {%- set sender_suffix = "" %}
+      {%- set declare_function = true %}
+      {%- if sender_cnt > 1 %}
+        {%- if sender_id_enabled %}
+          {%- set sender_suffix = "_" ~ sender_id %}
+        {%- elif sender_ns.default_generated %}
+          {%- set declare_function = false %}
+        {%- else %}
+          {%- set sender_ns.default_generated = true %}
+        {%- endif %}
+      {%- endif %}
+      {%- if declare_function %}
+      {%- if dataType_flag %}
+extern Std_ReturnType IocSend_{{ioc_name}}{{ sender_suffix }} ( {{dataType}} Arg0 );
+      {%- else %}
+extern Std_ReturnType IocSend_{{ioc_name}}{{ sender_suffix }} ( {{dataType}} *Arg0 );
+      {%- endif %}
+      {%- endif %}
+    {%- endfor %}
+
+extern Std_ReturnType IocReceive_{{ioc_name}} ( {{dataType}} *Arg0 );
+
+  {%- endif %}
+
+{%- endfor %}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* RT_FRAMEWORK_GEN_IOC_H */

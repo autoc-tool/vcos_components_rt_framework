@@ -1,0 +1,293 @@
+config RT_FRAMEWORK
+    bool "autosar cp support"
+    default n
+	---help---
+		Enable the autosar os module
+
+
+if RT_FRAMEWORK
+
+config RT_FRAMEWORK_NCORES
+	int "RT_FRAMEWORK_NCORES"
+	default BMP_NCPUS
+	---help---
+		Enable RT_FRAMEWORK_NCORES
+
+config RT_FRAMEWORK_EXTENDED_STATUS
+	bool "RT_FRAMEWORK_EXTENDED_STATUS"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_EXTENDED_STATUS
+
+config RT_FRAMEWORK_ACCESSCHECK
+	bool "RT_FRAMEWORK_ACCESSCHECK"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_ACCESSCHECK
+
+config RT_FRAMEWORK_TASK_MULTIPLE_ACTIVATION
+	bool "RT_FRAMEWORK_TASK_MULTIPLE_ACTIVATION"
+	default y
+	---help---
+		Enable RT_FRAMEWORK_TASK_MULTIPLE_ACTIVATION
+
+config RT_FRAMEWORK_MULTIAPP
+	bool "RT_FRAMEWORK_MULTIAPP"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_MULTIAPP
+
+config RT_FRAMEWORK_INT_LEVEL
+	bool "RT_FRAMEWORK_INT_LEVEL"
+	depends on ARCH_IRQPRIO
+	default n
+	---help---
+		Enable RT_FRAMEWORK_INT_LEVEL
+
+config RT_FRAMEWORK_CAT2_INT_LEVEL_CONTROL
+	bool "RT_FRAMEWORK_CAT2_INT_LEVEL_CONTROL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	default n
+	---help---
+		Enable RT_FRAMEWORK_CAT2_INT_LEVEL_CONTROL
+
+config RT_FRAMEWORK_CAT1_INT_LEVEL_CONTROL
+	bool "RT_FRAMEWORK_CAT1_INT_LEVEL_CONTROL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	default n
+	---help---
+		Enable RT_FRAMEWORK_CAT1_INT_LEVEL_CONTROL
+
+config RT_FRAMEWORK_MAX_INT_LEVEL
+	int "RT_FRAMEWORK_MAX_INT_LEVEL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	default 0
+	---help---
+		Enable RT_FRAMEWORK_MAX_INT_LEVEL
+
+config RT_FRAMEWORK_MIN_INT_LEVEL
+	int "RT_FRAMEWORK_MIN_INT_LEVEL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	default 0
+	---help---
+		Enable RT_FRAMEWORK_MIN_INT_LEVEL
+
+config RT_FRAMEWORK_MAX_CAT2_INT_LEVEL
+	int "RT_FRAMEWORK_MAX_CAT2_INT_LEVEL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	---help---
+		Enable RT_FRAMEWORK_MAX_CAT2_INT_LEVEL
+
+config RT_FRAMEWORK_MAX_CAT1_INT_LEVEL
+	int "RT_FRAMEWORK_MAX_CAT1_INT_LEVEL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	---help---
+		Enable RT_FRAMEWORK_MAX_CAT1_INT_LEVEL
+
+config RT_FRAMEWORK_MAX_TP_INT_LEVEL
+	int "RT_FRAMEWORK_MAX_TP_INT_LEVEL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	---help---
+		Enable RT_FRAMEWORK_MAX_TP_INT_LEVEL
+
+config RT_FRAMEWORK_MAX_CAT0_INT_LEVEL
+	int "RT_FRAMEWORK_MAX_CAT0_INT_LEVEL"
+	depends on RT_FRAMEWORK_INT_LEVEL
+	---help---
+		Enable RT_FRAMEWORK_MAX_CAT0_INT_LEVEL
+
+config RT_FRAMEWORK_CAT0_INT_IS_IRQ
+	bool "RT_FRAMEWORK_CAT0_INT_IS_IRQ"
+	default y
+	---help---
+		Enable RT_FRAMEWORK_CAT0_INT_IS_IRQ
+
+config RT_FRAMEWORK_COUNTER
+	bool "RT_FRAMEWORK_COUNTER"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_COUNTER
+
+config RT_FRAMEWORK_MEMPOOL
+	bool "RT_FRAMEWORK_MEMPOOL"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_MEMPOOL
+
+config RT_FRAMEWORK_IPICALL
+	bool "RT_FRAMEWORK_IPICALL"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_IPICALL
+
+config RT_FRAMEWORK_IPICALL_SYNC
+	depends on RT_FRAMEWORK_IPICALL
+	bool "RT_FRAMEWORK_IPICALL_SYNC"
+	default y
+	---help---
+		Enable RT_FRAMEWORK_IPICALL_SYNC
+
+config RT_FRAMEWORK_IPICALL_TEST
+	depends on RT_FRAMEWORK_IPICALL
+	bool "RT_FRAMEWORK_IPICALL_TEST"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_IPICALL_TEST
+
+config RT_FRAMEWORK_IOC
+	bool "RT_FRAMEWORK_IOC"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_IOC
+
+config RT_FRAMEWORK_SPINLOCK
+	bool "RT_FRAMEWORK_SPINLOCK"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_SPINLOCK
+
+config RT_FRAMEWORK_RESOURCE
+	bool "RT_FRAMEWORK_RESOURCE"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_RESOURCE
+
+config RT_FRAMEWORK_TIMER
+	bool "RT_FRAMEWORK_TIMER"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_TIMER
+
+config RT_FRAMEWORK_SCHTBL
+	bool "RT_FRAMEWORK_SCHTBL"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_SCHTBL
+
+config RT_FRAMEWORK_HOOK
+	bool "RT_FRAMEWORK_HOOK"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_HOOK
+
+config RT_FRAMEWORK_SHARE_HOOK_STACK
+	bool "RT_FRAMEWORK_SHARE_HOOK_STACK"
+	default n
+	depends on RT_FRAMEWORK_HOOK
+	---help---
+		Enable RT_FRAMEWORK_SHARE_HOOK_STACK
+
+config RT_FRAMEWORK_PANIC_HOOK
+	bool "RT_FRAMEWORK_PANIC_HOOK"
+	depends on RT_FRAMEWORK_HOOK
+	default n
+	---help---
+		Enable RT_FRAMEWORK_PANIC_HOOK
+
+config RT_FRAMEWORK_PRETASK_HOOK
+	bool "RT_FRAMEWORK_PRETASK_HOOK"
+	depends on RT_FRAMEWORK_HOOK
+	default n
+	---help---
+		Enable RT_FRAMEWORK_PRETASK_HOOK
+
+config RT_FRAMEWORK_POSTTASK_HOOK
+	bool "RT_FRAMEWORK_POSTTASK_HOOK"
+	depends on RT_FRAMEWORK_HOOK
+	default n
+	---help---
+		Enable RT_FRAMEWORK_POSTTASK_HOOK
+
+config RT_FRAMEWORK_ERROR_HOOK
+	bool "RT_FRAMEWORK_ERROR_HOOK"
+	depends on RT_FRAMEWORK_HOOK
+	default n
+	---help---
+		Enable RT_FRAMEWORK_ERROR_HOOK
+
+config RT_FRAMEWORK_PROTECTION_HOOK
+	bool "RT_FRAMEWORK_PROTECTION_HOOK"
+	depends on RT_FRAMEWORK_HOOK
+	default n
+	---help---
+		Enable RT_FRAMEWORK_PROTECTION_HOOK
+
+config RT_FRAMEWORK_SHUTDOWN_HOOK
+	bool "RT_FRAMEWORK_SHUTDOWN_HOOK"
+	depends on RT_FRAMEWORK_HOOK
+	default n
+	---help---
+		Enable RT_FRAMEWORK_SHUTDOWN_HOOK
+
+config RT_FRAMEWORK_STARTUP_HOOK
+	bool "RT_FRAMEWORK_STARTUP_HOOK"
+	depends on RT_FRAMEWORK_HOOK
+	default n
+	---help---
+		Enable RT_FRAMEWORK_STARTUP_HOOK
+
+config RT_FRAMEWORK_SYSCALL
+	bool "RT_FRAMEWORK_SYSCALL"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_SYSCALL
+
+config RT_FRAMEWORK_ERROR
+	bool "RT_FRAMEWORK_ERROR"
+	default y
+	---help---
+		Enable RT_FRAMEWORK_ERROR
+
+config RT_FRAMEWORK_MEMORY_PROTECTION
+	depends on RT_FRAMEWORK_SYSCALL
+	select KERNEL_MEMORY_PROTECTION
+	bool "RT_FRAMEWORK_MEMORY_PROTECTION"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_MEMORY_PROTECTION
+
+config RT_FRAMEWORK_ISOLATE
+	depends on RT_FRAMEWORK_MEMORY_PROTECTION
+	bool "RT_FRAMEWORK_ISOLATE"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_ISOLATE
+
+config RT_FRAMEWORK_HAVE_TRAP_HANDLER
+	depends on ARCH_HAVE_TRAP_HANDLER
+	bool "RT_FRAMEWORK_HAVE_TRAP_HANDLER"
+	default n
+	---help---
+		Enable RT_FRAMEWORK_HAVE_TRAP_HANDLER
+
+config RT_FRAMEWORK_SHARE_TASK_TEMP_STACK_BUF_SZ
+	int "Share task temporary stack buffer size"
+	default 0
+	---help---
+		Defines the size of the temporary stack buffer used by
+		shared tasks.
+
+config RT_FRAMEWORK_SHARE_TASK_TEMP_STACK_BUF_SZ_ENABLE
+	bool
+	default n if RT_FRAMEWORK_SHARE_TASK_TEMP_STACK_BUF_SZ = 0
+	default y
+	---help---
+		Enable RT_FRAMEWORK_SHARE_TASK_TEMP_STACK_BUF_SZ
+
+config RT_FRAMEWORK_TEMP_TLS_AND_ARGV_BUF_SZ
+	int "Share task temporary TLS and argv buffer size"
+	default 80
+	---help---
+		Defines the size of the temporary TLS and argv buffer used by
+		shared tasks.
+
+config RT_FRAMEWORK_SHARE_TASK_STACK
+	bool "RT_FRAMEWORK_SHARE_TASK_STACK"
+	depends on RR_DISABLED
+	depends on !SCHED_THREAD_LOCAL
+	depends on RT_FRAMEWORK_SHARE_TASK_TEMP_STACK_BUF_SZ_ENABLE
+	default n
+	---help---
+		Enable RT_FRAMEWORK_SHARE_TASK_STACK
+
+endif # RT_FRAMEWORK

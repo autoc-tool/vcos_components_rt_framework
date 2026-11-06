@@ -1,0 +1,146 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Os Application Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+ /* Including File */
+#include <nuttx/config.h>
+#include "application_cfg.h"
+#include "rtfw_compiler_cfg.h"
+#include "task_cfg.h"
+#include "isr_cfg.h"
+#include "counter_cfg.h"
+#include "rtfw_core.h"
+#include "core_cfg.h"
+#if defined(CONFIG_RT_FRAMEWORK_SCHTBL) && (CONFIG_RT_FRAMEWORK_SCHTBL == 1)
+#include "schedtable_cfg.h"
+#endif /* (CONFIG_RT_FRAMEWORK_SCHTBL == 1) */
+#if defined(CONFIG_RT_FRAMEWORK_HOOK) && (CONFIG_RT_FRAMEWORK_HOOK == 1)
+#include "hook_cfg.h"
+#endif
+
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+#include "memory_protection_cfg.h"
+#endif
+
+/* Local Macro Definition */
+
+/* Local Enumeration Definition */
+
+{%- set app_cfg = get_app_cfg() %}
+{%- set all_app_hook_cfg = get_app_hook_cfg() %}
+{%- for app_key, app_val in app_cfg.items() %}
+    {% set bsw_appname = app_val["BswAppName"] %}
+    {% set app_hook_cfg = all_app_hook_cfg[app_key] %}
+DeclareOsApplication(OS_CONST_SECTION, {{app_cfg[bsw_appname]["AppInstSection"]}}, {{app_key}}) = {
+    /* .instance =                */ &OSAPPOBJVAR({{app_key}}),
+    /* .app_name =                */ "{{app_key}}",
+    {%- if app_val["AppTaskList"]: %}
+    /* .task_refs =               */ {{app_val["AppTaskTable"]}},
+    /* .task_count =              */ &{{app_val["AppTaskTable"]}}_size,
+    {%- else: %}
+    /* .task_refs =               */ NULL_PTR,
+    /* .task_count =              */ NULL_PTR,
+    {%- endif %}
+    {%- if app_val["AppIsrList"]: %}
+    /* .isr_refs =                */ {{app_val["AppIsrTable"]}},
+    /* .isr_count =               */ &{{app_val["AppIsrTable"]}}_size,
+    {%- else: %}
+    /* .isr_refs =                */ NULL_PTR,
+    /* .isr_count =               */ NULL_PTR,
+    {%- endif %}
+#if defined(CONFIG_RT_FRAMEWORK_SCHTBL) && (CONFIG_RT_FRAMEWORK_SCHTBL == 1)
+    {%- if app_val["AppScheduleTableList"] and app_val["AppScheduleTableList"]|length > 0 %}
+    /* .scht_refs =               */ {{app_val["AppSchedTblTable"]}},
+    /* .scht_count =              */ &{{app_val["AppSchedTblTable"]}}_size,
+    {%- else %}
+    /* .scht_refs =               */ NULL_PTR,
+    /* .scht_count =              */ NULL_PTR,
+    {%- endif %}
+#endif /* (CONFIG_RT_FRAMEWORK_SCHTBL == 1) */
+#if defined(CONFIG_RT_FRAMEWORK_COUNTER) && (CONFIG_RT_FRAMEWORK_COUNTER == 1)
+    {%- if app_val["AppCounterList"] and app_val["AppCounterList"]|length > 0 %}
+    /* .counter_refs =            */ {{app_val["AppCounterTable"]}},
+    /* .counter_count =           */ &{{app_val["AppCounterTable"]}}_size,
+    {%- else %}
+    /* .counter_refs =            */ NULL_PTR,
+    /* .counter_count =           */ NULL_PTR,
+    {%- endif %}
+#endif
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+    /* .mpu_access_right =        */ &{{app_key.lower()}}_access_right,
+#endif
+#if defined(CONFIG_RT_FRAMEWORK_HOOK) && (CONFIG_RT_FRAMEWORK_HOOK == 1)
+{%- if "startuphook" in app_hook_cfg %}
+    /* .startup_hook =            */ &HOOKCFGVAR({{app_hook_cfg['startuphook']['hook_id']}}),
+{%- else %}
+    /* .startup_hook =            */ NULL_PTR,
+{%- endif %}
+{%- if "shutdownhook" in app_hook_cfg %}
+    /* .shutdown_hook =           */ &HOOKCFGVAR({{app_hook_cfg['shutdownhook']['hook_id']}}),
+{%- else %}
+    /* .shutdown_hook =           */ NULL_PTR,
+{%- endif %}
+{%- if "errorhook" in app_hook_cfg %}
+    /* .error_hook =              */ &HOOKCFGVAR({{app_hook_cfg['errorhook']['hook_id']}}),
+{%- else %}
+    /* .error_hook =              */ NULL_PTR,
+{%- endif %}
+{%- if app_hook_cfg | length > 0 %}
+    /* .hook_refs =               */ {{app_val["AppHookTable"]}},
+    /* .hook_count =              */ &{{app_val["AppHookTable"]}}_size,
+{%- else %}
+    /* .hook_refs =               */ NULL_PTR,
+    /* .hook_count =              */ NULL_PTR,
+{%- endif %}
+#endif
+    /* .core_id =                 */ OS_CORE_ID_{{app_val["CoreNumber"]}},
+    /* .app_id =                  */ {{app_val["AppId"]}},
+    /* .is_privileged =           */ {{app_val["AppPrivileged"]}},
+};
+
+{%- endfor %}
+
+{%- set core_info = get_core_configs() %}
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+{% for k, v in core_info.items(): %}
+{%- set core_num = k.lstrip("Os_Core") %}
+/* {{k}} config referenc table */
+CONSTP2CONST(os_app_cfg_t, OS_CONST, AUTOMATIC) os_core{{core_num}}_apps_cfg_ref_table[] = {
+{%- for app_key, app_val in app_cfg.items() %}
+    {%- if app_val["CoreNumber"] == core_num: %}
+    &OSAPPCFGVAR({{app_key}}),
+    {%- endif %}
+{%- endfor %}
+};
+CONST(OsObjIndexType, OS_CONST) os_core{{core_num}}_apps_cfg_ref_table_size = (OsObjIndexType)NELEMENTS(os_core{{core_num}}_apps_cfg_ref_table);
+{% endfor %}
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+DeclareRtfwRefTable(OS_CONST_SECTION, app, OS_APPLICATION_CNT) = {
+{%- for app, appval in app_cfg.items() %}
+    &OSAPPCFGVAR({{app}}),
+{%- endfor %}
+};
+

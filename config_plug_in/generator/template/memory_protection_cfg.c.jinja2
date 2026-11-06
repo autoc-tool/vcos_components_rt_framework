@@ -1,0 +1,382 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Memory Protection Configuration.
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#include "memory_protection_cfg.h"
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+{%- set mpu_cfg = get_mpu_cfg() %}
+{%- set app_cfg = get_app_cfg() %}
+{%- set target = get_target() %}
+
+{%- if mpu_cfg %}
+	{%- for extern_addr in mpu_cfg["extern_addr_list"] %}
+{{extern_addr}};
+	{%- endfor %}
+{%- endif %}
+
+{%- for coreid in mpu_cfg %}
+	{%- if coreid is number %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) core{{coreid}}_core_data_regions[{{mpu_cfg[coreid]["core_mpu_cfg"]["data_region"]["data_region_cnt"]}}] = {
+	{
+		/* .num =                   */ 0,
+		{%- if target in "AURIX2G_TC397" %}
+		/* .attr =                  */ READ_ENABLE | WRITE_ENABLE,
+		/* .base =                  */ 0x0UL,
+		/* .limit =                 */ 0x8UL,
+		{%- else %}
+		/* .attr =                  */ USER_RW_SUPERVISOR_RW,
+		/* .mem_attr_idx =          */ MEMATTR_TYPE_00_WRITE_BACK_WRTIE_ALLOCATE_CACHEABLE,
+		/* .base =                  */ 0x0UL,
+		/* .limit =                 */ 0x3FUL,
+		{%- endif %}
+	},
+		{%- set region_num = namespace(value = 0)  %}
+		{%- for region_name, region_value in mpu_cfg[coreid]["core_mpu_cfg"]["data_region"].items() %}
+			{%- if region_value is mapping %}
+			{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+			{%- if target in "AURIX2G_TC397" %}
+		/* .attr =                  */ READ_ENABLE{%- if "_RW" in region_value["MemoryRegionAccessRights"] %} | WRITE_ENABLE{%- endif %},
+			{%- else %}
+		/* .attr =                  */ {{region_value["MemoryRegionAccessRights"]}},
+		/* .mem_attr_idx =          */ {{region_value["MemoryRegionFlags"]}},
+			{%- endif %}
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+			{%- endif %}
+		{%- endfor %}
+};
+		{%- if mpu_cfg[coreid]["core_mpu_cfg"]["code_region"]["code_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) core{{coreid}}_core_code_regions[{{mpu_cfg[coreid]["core_mpu_cfg"]["code_region"]["code_region_cnt"]}}] = {
+			{%- set region_num = namespace(value = -1)  %}
+			{%- for region_name, region_value in mpu_cfg[coreid]["core_mpu_cfg"]["code_region"].items() %}
+				{%- if region_value is mapping %}
+				{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+		/* .attr =                  */ EXECUTE_ENABLE,
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+				{%- endif %}
+			{%- endfor %}
+};
+		{%- endif %}
+static CONST(struct mpu_cfg_s, OS_CONST) core{{coreid}}_core_mpu_cfg = {
+	/* .data_region_cnt =       */ {{mpu_cfg[coreid]["core_mpu_cfg"]["data_region"]["data_region_cnt"]}},
+		{%- if target in "AURIX2G_TC397" %}
+	/* .code_region_cnt =       */ {{mpu_cfg[coreid]["core_mpu_cfg"]["code_region"]["code_region_cnt"]}},
+		{%- endif %}
+	/* .data_region_cfg =       */ core{{coreid}}_core_data_regions,
+		{%- if target in "AURIX2G_TC397" %}
+			{%- if mpu_cfg[coreid]["core_mpu_cfg"]["code_region"]["code_region_cnt"] > 0 %}
+	/* .code_region_cfg =       */ core{{coreid}}_core_code_regions,
+			{%- else %}
+	/* .code_region_cfg =       */ NULL,
+			{%- endif %}
+		{%- endif %}
+};
+
+		{%- if mpu_cfg[coreid]["set0_mpu_cfg"]["data_region"]["data_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) core{{coreid}}_set0_data_regions[{{mpu_cfg[coreid]["set0_mpu_cfg"]["data_region"]["data_region_cnt"]}}] = {
+			{%- set region_num = namespace(value = mpu_cfg[coreid]["set0_mpu_cfg"]["data_region"]["data_region_start"] - 1) %}
+			{%- for region_name, region_value in mpu_cfg[coreid]["set0_mpu_cfg"]["data_region"].items() %}
+				{%- if region_value is mapping %}
+				{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+				{%- if target in "AURIX2G_TC397" %}
+		/* .attr =                  */ READ_ENABLE{%- if "_RW" in region_value["MemoryRegionAccessRights"] %} | WRITE_ENABLE{%- endif %},
+				{%- else %}
+		/* .attr =                  */ {{region_value["MemoryRegionAccessRights"]}},
+		/* .mem_attr_idx =          */ {{region_value["MemoryRegionFlags"]}},
+				{%- endif %}
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+				{%- endif %}
+			{%- endfor %}
+};
+		{%- endif %}
+		{%- if mpu_cfg[coreid]["set0_mpu_cfg"]["code_region"]["code_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) core{{coreid}}_set0_code_regions[{{mpu_cfg[coreid]["set0_mpu_cfg"]["code_region"]["code_region_cnt"]}}] = {
+			{%- set region_num = namespace(value = mpu_cfg[coreid]["set0_mpu_cfg"]["code_region"]["code_region_start"] - 1) %}
+			{%- for region_name, region_value in mpu_cfg[coreid]["set0_mpu_cfg"]["code_region"].items() %}
+				{%- if region_value is mapping %}
+				{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+		/* .attr =                  */ EXECUTE_ENABLE,
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+				{%- endif %}
+			{%- endfor %}
+};
+		{%- endif %}
+static CONST(struct mpu_cfg_s, OS_CONST) core{{coreid}}_set0_mpu_cfg = {
+	/* .data_region_cnt =       */ {{mpu_cfg[coreid]["set0_mpu_cfg"]["data_region"]["data_region_cnt"]}},
+		{%- if target in "AURIX2G_TC397" %}
+	/* .code_region_cnt =       */ {{mpu_cfg[coreid]["set0_mpu_cfg"]["code_region"]["code_region_cnt"]}},
+		{%- endif %}
+		{%- if mpu_cfg[coreid]["set0_mpu_cfg"]["data_region"]["data_region_cnt"] > 0 %}
+	/* .data_region_cfg =       */ core{{coreid}}_set0_data_regions,
+		{%- else %}
+	/* .data_region_cfg =       */ NULL,
+		{%- endif %}
+		{%- if target in "AURIX2G_TC397" %}
+			{%- if mpu_cfg[coreid]["set0_mpu_cfg"]["code_region"]["code_region_cnt"] > 0 %}
+	/* .code_region_cfg =       */ core{{coreid}}_set0_code_regions,
+			{%- else %}
+	/* .code_region_cfg =       */ NULL,
+			{%- endif %}
+		{%- endif %}
+};
+
+static CONST(struct mpu_core_access_right_s, OS_CONST) core{{coreid}}_access_right = {
+	/* .core_mpu_cfg =          */ &core{{coreid}}_core_mpu_cfg,
+	/* .set0_mpu_cfg =          */ &core{{coreid}}_set0_mpu_cfg,
+};
+
+		{%- for app_name in mpu_cfg[coreid]["app_mpu_cfg"] %}
+			{%- if mpu_cfg[coreid]["app_mpu_cfg"][app_name]["data_region"]["data_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) {{app_name.lower()}}_data_regions[{{mpu_cfg[coreid]["app_mpu_cfg"][app_name]["data_region"]["data_region_cnt"]}}] = {
+				{%- set region_num = namespace(value = mpu_cfg[coreid]["app_mpu_cfg"][app_name]["data_region"]["data_region_start"] - 1) %}
+				{%- for region_name, region_value in mpu_cfg[coreid]["app_mpu_cfg"][app_name]["data_region"].items() %}
+					{%- if region_value is mapping %}
+					{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+				{%- if target in "AURIX2G_TC397" %}
+		/* .attr =                  */ READ_ENABLE{%- if "_RW" in region_value["MemoryRegionAccessRights"] %} | WRITE_ENABLE{%- endif %},
+				{%- else %}
+		/* .attr =                  */ {{region_value["MemoryRegionAccessRights"]}},
+		/* .mem_attr_idx =          */ {{region_value["MemoryRegionFlags"]}},
+				{%- endif %}
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+					{%- endif %}
+				{%- endfor %}
+};
+			{%- endif %}
+			{%- if mpu_cfg[coreid]["app_mpu_cfg"][app_name]["code_region"]["code_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) {{app_name.lower()}}_code_regions[{{mpu_cfg[coreid]["app_mpu_cfg"][app_name]["code_region"]["code_region_cnt"]}}] = {
+				{%- set region_num = namespace(value = mpu_cfg[coreid]["app_mpu_cfg"][app_name]["code_region"]["code_region_start"] - 1) %}
+				{%- for region_name, region_value in mpu_cfg[coreid]["app_mpu_cfg"][app_name]["code_region"].items() %}
+					{%- if region_value is mapping %}
+					{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+		/* .attr =                  */ EXECUTE_ENABLE,
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+					{%- endif %}
+				{%- endfor %}
+};
+			{%- endif %}
+static CONST(struct mpu_cfg_s, OS_CONST) {{app_name.lower()}}_mpu_cfg = {
+	/* .data_region_cnt =       */ {{mpu_cfg[coreid]["app_mpu_cfg"][app_name]["data_region"]["data_region_cnt"]}},
+			{%- if target in "AURIX2G_TC397" %}
+	/* .code_region_cnt =       */ {{mpu_cfg[coreid]["app_mpu_cfg"][app_name]["code_region"]["code_region_cnt"]}},
+			{%- endif %}
+			{%- if mpu_cfg[coreid]["app_mpu_cfg"][app_name]["data_region"]["data_region_cnt"] > 0 %}
+	/* .data_region_cfg =       */ {{app_name.lower()}}_data_regions,
+			{%- else %}
+	/* .data_region_cfg =       */ NULL,
+			{%- endif %}
+			{%- if target in "AURIX2G_TC397" %}
+				{%- if mpu_cfg[coreid]["app_mpu_cfg"][app_name]["code_region"]["code_region_cnt"] > 0 %}
+	/* .code_region_cfg =       */ {{app_name.lower()}}_code_regions,
+				{%- else %}
+	/* .code_region_cfg =       */ NULL,
+				{%- endif %}
+			{%- endif %}
+};
+		{%- endfor %}
+
+		{%- for task_name in mpu_cfg[coreid]["task_mpu_cfg"] %}
+			{%- if mpu_cfg[coreid]["task_mpu_cfg"][task_name]["data_region"]["data_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) {{task_name.lower()}}_data_regions[{{mpu_cfg[coreid]["task_mpu_cfg"][task_name]["data_region"]["data_region_cnt"]}}] = {
+				{%- set region_num = namespace(value = mpu_cfg[coreid]["task_mpu_cfg"][task_name]["data_region"]["data_region_start"] - 1) %}
+				{%- for region_name, region_value in mpu_cfg[coreid]["task_mpu_cfg"][task_name]["data_region"].items() %}
+					{%- if region_value is mapping %}
+					{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+				{%- if target in "AURIX2G_TC397" %}
+		/* .attr =                  */ READ_ENABLE{%- if "_RW" in region_value["MemoryRegionAccessRights"] %} | WRITE_ENABLE{%- endif %},
+				{%- else %}
+		/* .attr =                  */ {{region_value["MemoryRegionAccessRights"]}},
+		/* .mem_attr_idx =          */ {{region_value["MemoryRegionFlags"]}},
+				{%- endif %}
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+					{%- endif %}
+				{%- endfor %}
+};
+			{%- endif %}
+			{%- if mpu_cfg[coreid]["task_mpu_cfg"][task_name]["code_region"]["code_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) {{task_name.lower()}}_code_regions[{{mpu_cfg[coreid]["task_mpu_cfg"][task_name]["code_region"]["code_region_cnt"]}}] = {
+				{%- set region_num = namespace(value = mpu_cfg[coreid]["task_mpu_cfg"][task_name]["code_region"]["code_region_start"] - 1) %}
+				{%- for region_name, region_value in mpu_cfg[coreid]["task_mpu_cfg"][task_name]["code_region"].items() %}
+					{%- if region_value is mapping %}
+					{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+		/* .attr =                  */ EXECUTE_ENABLE,
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+					{%- endif %}
+				{%- endfor %}
+};
+			{%- endif %}
+static CONST(struct mpu_cfg_s, OS_CONST) {{task_name.lower()}}_mpu_cfg = {
+	/* .data_region_cnt =       */ {{mpu_cfg[coreid]["task_mpu_cfg"][task_name]["data_region"]["data_region_cnt"]}},
+			{%- if target in "AURIX2G_TC397" %}
+	/* .code_region_cnt =       */ {{mpu_cfg[coreid]["task_mpu_cfg"][task_name]["code_region"]["code_region_cnt"]}},
+			{%- endif %}
+			{%- if mpu_cfg[coreid]["task_mpu_cfg"][task_name]["data_region"]["data_region_cnt"] > 0 %}
+	/* .data_region_cfg =       */ {{task_name.lower()}}_data_regions,
+			{%- else %}
+	/* .data_region_cfg =       */ NULL,
+			{%- endif %}
+			{%- if target in "AURIX2G_TC397" %}
+				{%- if mpu_cfg[coreid]["task_mpu_cfg"][task_name]["code_region"]["code_region_cnt"] > 0 %}
+	/* .code_region_cfg =       */ {{task_name.lower()}}_code_regions,
+				{%- else %}
+	/* .code_region_cfg =       */ NULL,
+				{%- endif %}
+			{%- endif %}
+};
+		{%- endfor %}
+
+		{%- for isr_name in mpu_cfg[coreid]["isr_mpu_cfg"] %}
+			{%- if mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["data_region"]["data_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) {{isr_name.lower()}}_data_regions[{{mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["data_region"]["data_region_cnt"]}}] = {
+				{%- set region_num = namespace(value = mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["data_region"]["data_region_start"] - 1) %}
+				{%- for region_name, region_value in mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["data_region"].items() %}
+					{%- if region_value is mapping %}
+					{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+				{%- if target in "AURIX2G_TC397" %}
+		/* .attr =                  */ READ_ENABLE{%- if "_RW" in region_value["MemoryRegionAccessRights"] %} | WRITE_ENABLE{%- endif %},
+				{%- else %}
+		/* .attr =                  */ {{region_value["MemoryRegionAccessRights"]}},
+		/* .mem_attr_idx =          */ {{region_value["MemoryRegionFlags"]}},
+				{%- endif %}
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+					{%- endif %}
+				{%- endfor %}
+};
+			{%- endif %}
+			{%- if mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["code_region"]["code_region_cnt"] > 0 %}
+static CONST(struct mpu_region_cfg_s, OS_CONST) {{isr_name.lower()}}_code_regions[{{mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["code_region"]["code_region_cnt"]}}] = {
+				{%- set region_num = namespace(value = mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["code_region"]["code_region_start"] - 1) %}
+				{%- for region_name, region_value in mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["code_region"].items() %}
+					{%- if region_value is mapping %}
+					{%- set region_num.value = region_num.value + 1 %}
+	{
+		/* .num =                   */ {{region_num.value}},
+		/* .attr =                  */ EXECUTE_ENABLE,
+		/* .base =                  */ {{region_value["MemoryRegionStartAddress"]}},
+		/* .limit =                 */ {{region_value["MemoryRegionEndAddress"]}},
+	},
+					{%- endif %}
+				{%- endfor %}
+};
+			{%- endif %}
+static CONST(struct mpu_cfg_s, OS_CONST) {{isr_name.lower()}}_mpu_cfg = {
+	/* .data_region_cnt =       */ {{mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["data_region"]["data_region_cnt"]}},
+			{%- if target in "AURIX2G_TC397" %}
+	/* .code_region_cnt =       */ {{mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["code_region"]["code_region_cnt"]}},
+			{%- endif %}
+			{%- if mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["data_region"]["data_region_cnt"] > 0 %}
+	/* .data_region_cfg =       */ {{isr_name.lower()}}_data_regions,
+			{%- else %}
+	/* .data_region_cfg =       */ NULL,
+			{%- endif %}
+			{%- if target in "AURIX2G_TC397" %}
+				{%- if mpu_cfg[coreid]["isr_mpu_cfg"][isr_name]["code_region"]["code_region_cnt"] > 0 %}
+	/* .code_region_cfg =       */ {{isr_name.lower()}}_code_regions,
+				{%- else %}
+	/* .code_region_cfg =       */ NULL,
+				{%- endif %}
+			{%- endif %}
+};
+		{%- endfor %}
+	{%- endif %}
+{%- endfor %}
+
+{%- if mpu_cfg %}
+	{%- for coreid in mpu_cfg %}
+		{%- if coreid is number %}
+CONST(struct mpu_access_right_s, OS_CONST) core{{coreid}}_prestart_task_access_right = {
+	/* .set_num                 = */ 0,
+	/* .app_mpu_cfg             = */ &empty_mpu_cfg,
+	/* .thread_mpu_cfg          = */ &os_prestart_task_core{{coreid}}_mpu_cfg,
+};
+		{%- endif %}
+	{%- endfor %}
+	{%- for app_name, app_value in app_cfg.items() %}
+CONST(struct mpu_access_right_s, OS_CONST) {{app_name.lower()}}_access_right = {
+	/* .set_num                 = */ {{app_value["AppMemoryProtectionIdentifier"]}},
+	/* .app_mpu_cfg             = */ &{{app_name.lower()}}_mpu_cfg,
+	/* .thread_mpu_cfg          = */ &empty_mpu_cfg,
+};
+		{%- for task_name in app_value["AppTaskList"] %}
+CONST(struct mpu_access_right_s, OS_CONST) {{task_name.lower()}}_access_right = {
+	/* .set_num                 = */ {{app_value["AppMemoryProtectionIdentifier"]}},
+	/* .app_mpu_cfg             = */ &{{app_name.lower()}}_mpu_cfg,
+	/* .thread_mpu_cfg          = */ &{{task_name.lower()}}_mpu_cfg,
+};
+		{%- endfor %}
+		{%- for isr_name in app_value["AppIsrList"] %}
+CONST(struct mpu_access_right_s, OS_CONST) {{isr_name.lower()}}_access_right = {
+	/* .set_num                 = */ {{app_value["AppMemoryProtectionIdentifier"]}},
+	/* .app_mpu_cfg             = */ &{{app_name.lower()}}_mpu_cfg,
+	/* .thread_mpu_cfg          = */ &{{isr_name.lower()}}_mpu_cfg,
+};
+		{%- endfor %}
+	{%- endfor %}
+
+CONSTP2CONST(struct mpu_core_access_right_s, OS_CONST, AUTOMATIC) os_core_access_right_ref_table[] = {
+	{%- for coreid in mpu_cfg %}
+		{%- if coreid is number %}
+	&core{{coreid}}_access_right,
+		{%- endif %}
+	{%- endfor %}
+};
+CONST(OsObjIndexType, OS_CONST) os_core_access_right_ref_table_size = NELEMENTS(os_core_access_right_ref_table);
+{%- endif %}
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"

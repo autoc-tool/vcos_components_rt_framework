@@ -1,0 +1,93 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: ISR Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#ifndef RT_FRAMEWORK_INC_OS_ISR_CFG_H
+#define RT_FRAMEWORK_INC_OS_ISR_CFG_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Including File */
+#include "rtfw_isr.h"
+
+/* global Macro Definition */
+
+/* global Enumeration Definition */
+
+{%- set isr_cfg_dict = get_isr_cfg() %}
+{%- set app_cfg = get_app_cfg() %}
+
+typedef enum {
+{%- for appname, appval in app_cfg.items() %}
+    {%- for candit in appval["AppIsrList"] %}
+    {{candit.upper()}}_ID = {{isr_cfg_dict[candit]["IsrIntSource"]}},
+    {%- endfor %}
+{%- endfor %}
+    OS_ISRHWSRC_CNT,
+} OS_ISRHWSRC_DEF;
+
+typedef enum {
+{%- for appname, appval in app_cfg.items() %}
+    {%- for candit in appval["AppIsrList"] %}
+    OS_ISR_{{candit.upper()}}_ID,
+    {%- endfor %}
+{%- endfor %}
+    OS_ISR_CNT
+} OS_ISRID_DEF;
+
+/* global type & Structure Definition */
+
+/* global Variable Declaration */
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppIsrList"] %}
+
+extern CONSTP2CONST(os_isr_cfg_t, OS_CONST, AUTOMATIC) {{app_cfg[app]["AppIsrTable"]}}[];
+extern CONST(OsObjIndexType, OS_CONST) {{app_cfg[app]["AppIsrTable"]}}_size;
+    {%- endif %}
+{%- endfor %}
+
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+/* global Function Declaration */
+
+{%- for app in app_cfg %}
+    {%- for candit in app_cfg[app]["AppIsrList"] %}
+extern void {{isr_cfg_dict[candit]["IsrEntryFunc"]}}(void);
+      {%- endfor %}
+{%- endfor %}
+
+/* global Function Implementation */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif	 /* RT_FRAMEWORK_INC_OS_ISR_CFG_H */
+

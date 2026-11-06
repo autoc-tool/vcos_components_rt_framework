@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Resource配置源文件
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include "Os.h"
+#include "rtfw_resource.h"
+#include "resource_cfg.h"
+#include "rtfw_application.h"
+#include "application_cfg.h"
+#include "rtfw_compiler_cfg.h"
+
+{%- set resource_cfg = get_resource_cfg() %}
+
+{%- for resource_id, resource_val in resource_cfg.items() %}
+    {%- if resource_val["OsResourceAccessingApplication"] %}
+DeclareResource(OS_CONST_SECTION, OS_GLOBAL_BSS_SECTION, {{resource_id.upper()}}) = {
+    /* .obj_desc =              */ &RESOURCEOBJVAR({{resource_id.upper()}}),
+    /* .resource_id =           */ {{resource_id.upper()}},
+    /* .ceiling_priority =      */ {{resource_val["CeilingPriority"]}},
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+    {%- set app_mask = get_access_app_mask(resource_val["OsResourceAccessingApplication"], index_size=35) %}
+    /* .access_app_mask =       */ ({{app_mask}}),
+#endif
+};
+    {%- endif %}
+{%- endfor %}
+
+/* Resoure ref by Core */
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+{%- set core_resource_map = get_core_referenced_resource() %}
+{%- set all_core_ids = range(get_core_cnt()) %}
+{%- for core_id in all_core_ids %}
+    {%- set core_resources = core_resource_map[core_id|string] %}
+    {%- if core_resources %}
+
+CONSTP2CONST(os_resource_cfg_t, OS_CONST, AUTOMATIC) os_core{{core_id}}_resource_cfg_ref_table[] =
+{
+        {%- for resource_name in core_resources %}
+    &RESOURCECFGVAR({{resource_name.upper()}}),
+        {%- endfor %}
+};
+CONST(OsObjIndexType, OS_CONST) os_core{{core_id}}_resource_cfg_ref_table_size = NELEMENTS(os_core{{core_id}}_resource_cfg_ref_table);
+    {%- endif %}
+
+{%- endfor %}
+
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+DeclareRtfwRefTable(OS_CONST_SECTION, resource, OS_RESOURCE_CNT) = {
+{%- for resource_id in resource_cfg %}
+    &RESOURCECFGVAR({{resource_id.upper()}}),
+{%- endfor %}
+};
+
+

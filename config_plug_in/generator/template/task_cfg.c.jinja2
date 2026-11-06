@@ -1,0 +1,153 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: task Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include <nuttx/config.h>
+#include "rtfw_thread_types.h"
+#include "task_cfg.h"
+#include "stack_cfg.h"
+#include "rtfw_context.h"
+#include "rtfw_compiler_cfg.h"
+#include "application_cfg.h"
+#include "rtfw_core.h"
+#include "core_cfg.h"
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+#include "memory_protection_cfg.h"
+#endif
+
+{%- set task_cfg = get_task_cfg() %}
+{%- set app_cfg = get_app_cfg() %}
+{%- set task_stack_sharing_info, task_stack_sharing_ref = get_task_stack_sharing() %}
+
+/* Extended Task Shared Stack */
+{%- for core_id , combs in task_stack_sharing_info.items() %}
+    {%- for comb, comb_value in combs.items() %}
+{% set bsw_appname = get_bsw_app_from_coreid(core_id) %}
+DeclareThreadStack(OS_CORE{{core_id}}_{{comb.upper()}}_STACK_SECTION, {{ ("Core%s_%s_Cfg" % (core_id, comb)) | upper }}, {{ ("Core%s_%s_Cfg_Stack_Size" % (core_id, comb)) | upper }});
+DeclareTaskShareStackOwner({{app_cfg[bsw_appname]["AppInstSection"]}}, {{ ("Core%s_%s_Cfg" % (core_id, comb)) | upper }});
+        {%- for task in comb_value["CombTasklist"] %}
+        {%- set t_cfg = task.upper() + "_CFG" %}
+DeclareTaskShareStackCFG(OS_CONST_SECTION, {{app_cfg[bsw_appname]["AppInstSection"]}}, {{t_cfg}}) = {
+    /* .temp_stack =            */ &TASKTEMPSTACKVAR({{t_cfg}}),
+    /* .share_stack_owner =     */ &TASKSHARESTACKOWNERVAR({{ ("Core%s_%s_Cfg" % (core_id, comb)) | upper }}),
+};
+        {%- endfor %}
+    {%- endfor %}
+{%- endfor %}
+
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppTaskList"] %}
+        {%- for task in app_cfg[app]["AppTaskList"] %}
+        {%- set bsw_appname = app_cfg[app]["BswAppName"] %}
+        {%- set t_cfg = task.upper() + "_CFG" %}
+        {%- set core_i = app_cfg[bsw_appname]["CoreNumber"] %}
+{% if task not in task_stack_sharing_ref.keys() %}
+DeclareThreadStack({{task_cfg[task]["TaskStackSection"]}}, {{t_cfg}}, {{t_cfg}}_STACK_SIZE);
+{% endif %}
+{%- if task_cfg[task]["TaskType"] == 'BASIC' %}
+DeclareBasicTask(OS_CONST_SECTION, {{app_cfg[bsw_appname]["AppInstSection"]}}, {{t_cfg}}) = {
+{%- else %}
+DeclareExtendedTask(OS_CONST_SECTION, {{app_cfg[bsw_appname]["AppInstSection"]}}, {{t_cfg}}) = {
+{%- endif %}
+    /* .context =               */
+    {
+        /* .instance =             */ &TASKOBJVAR({{t_cfg}}),
+        /* .instance_name =        */ "{{task}}",
+        /* .core =                 */ &OSCORECFGVAR(Os_Core{{core_i}}),
+        /* .arch_ctx_cfg =         */
+        {
+{%- if task in task_stack_sharing_ref.keys() %}
+            /* .StackAddr =        */ (OsStackAddrType)THREADSTACKVAR({{ ("Core%s_%s_Cfg" % (core_i, task_stack_sharing_ref[task])) | upper }}),
+            /* .StackSize =        */ (OsStackSizeType)THREADSTACKSIZEVAR({{ ("Core%s_%s_Cfg_Stack_Size" % (core_i, task_stack_sharing_ref[task])) | upper }}),
+{%- else %}
+            /* .stack_addr =       */ (OsStackAddrType)THREADSTACKVAR({{t_cfg}}),
+            /* .stack_size =       */ (OsStackSizeType)THREADSTACKSIZEVAR({{t_cfg}}_STACK_SIZE),
+{%- endif %}
+            /* .entry_addr =       */ (os_context_entry_t)&os_task_{{task.lower()}},
+            /* .exit_addr =        */ (os_context_exit_t)NULL_PTR,
+            /* .entry_param =      */ (os_context_entry_para_t)NULL_PTR,
+        },
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+        /* .app_owner_cfg =        */ &OSAPPCFGVAR({{app}}),
+        {%- set access_app = task_cfg[task]["TaskAccessApp"] + [app] %}
+        {%- set access_str = get_access_app_mask(access_app, index_size=39) %}
+        /* .access_app_mask =      */ ({{access_str}}),
+#endif /* #if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1) */
+        /* .initial_ctx_id =       */ OS_TASK_CONTEXT_ID,
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+        /* .mpu_access_right =     */ &{{task.lower()}}_access_right,
+#endif
+    },
+    /* .base_priority =            */ {{t_cfg}}_PRIORITY,
+{%- if task_cfg[task]["TaskType"] == 'EXTENDED' %}
+    /* .event_hdl =                */ &TASKEVENTOBJVAR({{t_cfg}}),
+{%- else %}
+    /* .event_hdl =                */ NULL_PTR,
+{%- endif %}
+#if defined(CONFIG_RT_FRAMEWORK_SHARE_TASK_STACK) && (CONFIG_RT_FRAMEWORK_SHARE_TASK_STACK == 1)
+{%- if task in task_stack_sharing_ref.keys() %}
+    /* .task_share_stack =         */ &TASKSHARESTACKCFGVAR({{t_cfg}}),
+{%- else %}
+    /* .task_share_stack =         */ NULL_PTR,
+{%- endif %}
+#endif
+    /* .task_id =                  */ OS_TASK_{{task.upper()}}_ID,
+    /* .autostart_mode =           */ {{task_cfg[task]["TaskAutostart"]}},
+{%- if task_cfg[task]["TaskSchedule"] == 'FULL' %}
+    /* .is_preemptive =            */ TRUE,
+{%- else %}
+    /* .is_preemptive =            */ FALSE,
+{%- endif %}
+    /* .activation_limit =         */ {{task_cfg[task]["TaskActivation"]}},
+};
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+{%- for app, app_val in app_cfg.items() %}
+    {%- if app_val["AppTaskList"] %}
+
+CONSTP2CONST(os_task_cfg_t, OS_CONST, AUTOMATIC) {{app_val["AppTaskTable"]}}[] = {
+        {%- for task in app_cfg[app]["AppTaskList"] %}
+    &TASKCFGVAR({{task.upper()}}_CFG),
+        {%- endfor %}
+};
+
+CONST(OsObjIndexType, OS_CONST) {{app_val["AppTaskTable"]}}_size = NELEMENTS({{app_val["AppTaskTable"]}});
+    {%- endif %}
+{%- endfor %}
+
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+DeclareRtfwRefTable(OS_CONST_SECTION, task, OS_TASK_CNT) = {
+{%- for app in app_cfg %}
+    {%- for task in app_cfg[app]["AppTaskList"] %}
+    &TASKCFGVAR({{task.upper()}}_CFG),
+    {%- endfor %}
+{%- endfor %}
+};
+

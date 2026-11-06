@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Core Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#ifndef RT_FRAMEWORK_INC_OS_CORE_CFG_H
+#define RT_FRAMEWORK_INC_OS_CORE_CFG_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Including File */
+#include "rtfw_core.h"
+
+/* global Macro Definition */
+
+/* global Enumeration Definition */
+
+{%- set core_cfg = get_core_configs() %}
+
+typedef enum {
+{%- for core_val in core_cfg.values() %}
+    OS_CORE_PHYSICAL_ID_{{core_val["PhyId"][-1]}} = {{core_val["PhyId"][-1]}}U,
+{%- endfor %}
+    OS_CORE_PHYSICAL_CNT = {{core_cfg|length}}U,
+} HwCoreIdType;
+
+typedef enum {
+    OS_CORE_ID_MASTER = 0U,
+{%- for core_val in core_cfg.values() %}
+    {{core_val["core_id"]}} = {{core_val["core_id"][-1]}}U,
+{%- endfor %}
+    OS_CORE_CNT = {{core_cfg|length}}U,
+} SwCoreIdType;
+
+/* global type & Structure Definition */
+
+/* global Variable Declaration */
+{%- for core in core_cfg.values() %}
+extern const os_core_cfg_t OSCORECFGVAR(Os_Core{{core["core_id"][-1]}});
+extern os_core_inst_t OSCOREOBJVAR(Os_Core{{core["core_id"][-1]}});
+{%- endfor %}
+/* global Function Declaration */
+
+/* global Function Implementation */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* RT_FRAMEWORK_INC_OS_CORE_CFG_H */
+

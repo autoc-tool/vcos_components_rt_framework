@@ -1,0 +1,91 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ /*
+ * Description: Counter Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#ifndef COUNTER_CFG_H
+#define COUNTER_CFG_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Including File */
+#include <nuttx/config.h>
+#include "rtfw_counter.h"
+
+/* global Macro Definition */
+{%- set counter_cfg = get_counter_cfg() %}
+{%- set app_cfg = get_app_cfg() %}
+
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppCounterList"] %}
+        {%- for counter in app_cfg[app]["AppCounterList"] %}
+            {%- if counter in counter_cfg %}
+#define OS_MS2TICKS_{{counter.upper()}}(ms)    ((ms) * {{counter_cfg[counter]["TicksPerMs"]}}U)
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+
+/* global Enumeration Definition */
+typedef enum
+{
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppCounterList"] %}
+        {%- for counter in app_cfg[app]["AppCounterList"] %}
+            {%- if counter in counter_cfg %}
+    {{counter}},
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+    OS_COUNTER_CNT,
+} OS_COUNTER_DEF;
+
+/* global Variable Declaration */
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppCounterList"] %}
+        {%- for counter in app_cfg[app]["AppCounterList"] %}
+            {%- if counter in counter_cfg %}
+extern const os_counter_cfg_t COUNTERCFGVAR({{counter}}_cfg);
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppCounterList"] %}
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+extern CONSTP2CONST(os_counter_cfg_t, OS_CONST, AUTOMATIC) {{app_cfg[app]["AppCounterTable"]}}[];
+extern CONST(OsObjIndexType, OS_CONST) {{app_cfg[app]["AppCounterTable"]}}_size;
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+    {%- endif %}
+{%- endfor %}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif	 /* COUNTER_CFG_H */

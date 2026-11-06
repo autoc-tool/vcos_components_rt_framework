@@ -1,0 +1,160 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: ISR Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include <nuttx/config.h>
+#include "isr_cfg.h"
+#include "rtfw_context_types.h"
+#include "rtfw_core.h"
+#include "core_cfg.h"
+#include "application_cfg.h"
+#include "rtfw_compiler_cfg.h"
+#include "rtfw_counter.h"
+#include "counter_cfg.h"
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+#include "memory_protection_cfg.h"
+#endif
+
+{%- set isr_cfg_dict = get_isr_cfg() %}
+{%- set irq_dispatch_is_level = check_isq_dispatch_method_is_level() %}
+{%- set app_cfg = get_app_cfg() %}
+{%- set isr_counter = get_isr_counter() %}
+
+{%- for appname, appval in app_cfg.items() %}
+    {%- if appval["AppIsrList"] %}
+    {%- for candit in appval["AppIsrList"] %}
+        {%- set bsw_appname = appval["BswAppName"] %}
+        {%- set isr_cfg = isr_cfg_dict[candit] %}
+        {%- set core_id = "Core" + appval['CoreNumber'] %}
+
+            {%- if candit in isr_counter %}
+DeclareCounterISR(OS_CONST_SECTION, {{app_cfg[bsw_appname]["AppInstSection"]}}, {{core_id}}, {{candit}}_ID) = {
+    {
+        /* .context */
+        {
+            /* .instance             = */            &ISROBJVAR({{core_id}}, {{candit}}_ID),
+            /* .instance_name         = */           "{{candit}}",
+            /* .core                = */             &OSCORECFGVAR(Os_{{core_id}}),
+            /* .arch_ctx_cfg      = */
+            {
+                /* .stack_addr       = */ (OsStackAddrType)NULL_PTR,
+                /* .stack_size       = */ (OsStackSizeType)0,
+                /* .entry_addr       = */ (os_context_entry_t)&{{isr_cfg["IsrEntryFunc"]}},
+                /* .exit_addr        = */ (os_context_exit_t)NULL_PTR,
+                /* .entry_param      = */ (os_context_entry_para_t){{isr_cfg["IsrEntryParam"]}},
+            },
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+            /* .app_owner_cfg        = */ &OSAPPCFGVAR({{appname}}),
+            /* .access_app_mask      = */ 0xFFFFFFFFU,
+#endif /* #if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1) */
+            /* .initial_ctx_id       = */ {{isr_cfg["IsrContext"]}},
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+            /* .mpu_access_right     = */ &{{candit.lower()}}_access_right,
+#endif
+        },
+        /* .arch_isr_cfg */
+        {
+            /* .level                = */ {{isr_cfg["IsrIntPriority"]}},
+            /* .vector_num           = */ {{isr_cfg["IsrIntSource"]}},
+            {%- if irq_dispatch_is_level  %}
+            /* .irq                  = */ {{isr_cfg["IsrIntPriority"]}},
+            {%- else %}
+            /* .irq                  = */ {{isr_cfg["IsrIntSource"]}},
+            {%- endif %}
+            /* .hw_handler           = */ (void*){{appval['CoreNumber']}},
+        },
+        /* .type                     = */ {{isr_cfg["IsrCategory"]}},
+        /* .isr_id                   = */ OS_ISR_{{candit.upper()}}_ID,
+        /* .is_enabled_on_init       = */ {{isr_cfg["IsrEnableOnInit"]}},
+    },
+    /* .counter                      = */ (os_counter_cfg_t*)&COUNTERCFGVAR({{isr_counter[candit]}}_cfg),
+};
+            {%- else %}
+DeclareISR(OS_CONST_SECTION, {{app_cfg[bsw_appname]["AppInstSection"]}}, {{core_id}}, {{candit}}_ID) = {
+    /* .context */
+    {
+        /* .instance             = */            &ISROBJVAR({{core_id}}, {{candit}}_ID),
+        /* .instance_name=      =*/              "{{candit}}",
+        /* .core                = */             &OSCORECFGVAR(Os_{{core_id}}),
+        /* .arch_ctx_cfg      = */
+        {
+            /* .stack_addr           = */ (OsStackAddrType)NULL_PTR,
+            /* .stack_size           = */ (OsStackSizeType)0,
+            /* .entry_addr           = */ (os_context_entry_t)&{{isr_cfg["IsrEntryFunc"]}},
+            /* .exit_addr            = */ (os_context_exit_t)NULL_PTR,
+            /* .entry_param          = */ (os_context_entry_para_t){{isr_cfg["IsrEntryParam"]}},
+        },
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+        /* .app_owner_cfg            = */ &OSAPPCFGVAR({{appname}}),
+        /* .access_app_mask          = */ 0xFFFFFFFFU,
+#endif /* #if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1) */
+        /* .initial_ctx_id           = */ {{isr_cfg["IsrContext"]}},
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+        /* .mpu_access_right         = */ &{{candit.lower()}}_access_right,
+#endif
+    },
+    /* .arch_isr_cfg */
+    {
+        /* .level                    = */ {{isr_cfg["IsrIntPriority"]}},
+        /* .vector_num               = */ {{isr_cfg["IsrIntSource"]}},
+        {%- if irq_dispatch_is_level  %}
+        /* .irq                      = */ {{isr_cfg["IsrIntPriority"]}},
+        {%- else %}
+        /* .irq                      = */ {{isr_cfg["IsrIntSource"]}},
+        {%- endif %}
+        /* .hw_handler               = */ (void*){{appval['CoreNumber']}},
+    },
+    /* .type                         = */ {{isr_cfg["IsrCategory"]}},
+    /* .isr_id                       = */ OS_ISR_{{candit.upper()}}_ID,
+    /* .is_enabled_on_init           = */ {{isr_cfg["IsrEnableOnInit"]}},
+};
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppIsrList"] %}
+
+CONSTP2CONST(os_isr_cfg_t, OS_CONST, AUTOMATIC) {{app_cfg[app]["AppIsrTable"]}}[] = {
+    {%- for candit in app_cfg[app]["AppIsrList"] %}
+    (os_isr_cfg_t *)&ISRCFGVAR(Core{{app_cfg[app]["CoreNumber"]}}, {{candit}}_ID),
+    {%- endfor %}
+};
+CONST(OsObjIndexType, OS_CONST) {{app_cfg[app]["AppIsrTable"]}}_size = NELEMENTS({{app_cfg[app]["AppIsrTable"]}});
+    {%- endif %}
+{%- endfor %}
+
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+DeclareRtfwRefTable(OS_CONST_SECTION, isr, OS_ISR_CNT) = {
+{%- for app in app_cfg %}
+    {%- for candit in app_cfg[app]["AppIsrList"] %}
+    (os_isr_cfg_t *)&ISRCFGVAR(Core{{app_cfg[app]["CoreNumber"]}}, {{candit}}_ID),
+    {%- endfor %}
+{%- endfor %}
+};

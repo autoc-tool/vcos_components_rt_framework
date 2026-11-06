@@ -1,0 +1,93 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Spinlock Configuration.
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include <nuttx/config.h>
+#include "spinlock_cfg.h"
+#include "rtfw_spinlock.h"
+#include "rtfw_application.h"
+#include "application_cfg.h"
+#include "rtfw_compiler_cfg.h"
+
+#if defined(CONFIG_RT_FRAMEWORK_SPINLOCK) && (CONFIG_RT_FRAMEWORK_SPINLOCK == 1)
+
+{%- set osmempool_spinlockid_set = get_osmempool_spinlock_id_set_ui() %}
+{%- set os_ioc_spinlock_id_set = get_ioc_spinlock_id_set() %}
+{%- set spinlock_cfg = get_spinlock_cfg() %}
+{%- for spin_id, spin_val in spinlock_cfg.items() %}
+    {%- set sid_u = spin_id.upper() %}
+    {%- set app_mask = get_access_app_mask(spin_val["AccessingApplication"], index_size=35) %}
+
+DeclareSpinlock(OS_CONST_SECTION, OS_GLOBAL_BSS_SECTION, {{sid_u}}) = {
+    /* .obj_desc =               */ &SPINLOCKOBJVAR({{sid_u}}),
+    /* .method =                 */ {{spin_val["Method"]}},
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+    /* .access_app_mask =        */ ({{app_mask}}),
+#endif
+    /* .check =                  */ {{spin_val["LockType"]}},
+    /* .spin_id =                */ {{sid_u}},
+    /* .order =                  */ {{spin_val["Order"]}},
+};
+{%- endfor %}
+
+
+{%- for osmempool_spinlock_id in osmempool_spinlockid_set %}
+DeclareSpinlock(OS_CONST_SECTION, OS_GLOBAL_BSS_SECTION, {{osmempool_spinlock_id | upper}}) = {
+    /* .obj_des =                */ &SPINLOCKOBJVAR({{osmempool_spinlock_id | upper}}),
+    /* .method =                 */ LOCK_CAT2_INTERRUPTS,
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+    /* .access_app_mask =        */ (RTFW_APPID2MASK(0) | (~RTFW_APPID2MASK(0))),
+#endif
+    /* .check =                  */ SPINLOCKCHECK_DISABLED,
+    /* .spin_id =                */ {{osmempool_spinlock_id | upper}},
+    /* .order =                  */ 0,
+};
+{%- endfor %}
+
+{%- for os_ioc_spinlock_id in os_ioc_spinlock_id_set %}
+DeclareSpinlock(OS_CONST_SECTION, OS_GLOBAL_BSS_SECTION, {{os_ioc_spinlock_id}}) = {
+    /* .obj_des =                */ &SPINLOCKOBJVAR({{os_ioc_spinlock_id}}),
+    /* .method =                 */ LOCK_NOTHING,
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+    /* .access_app_mask =        */ (RTFW_APPID2MASK(0) | (~RTFW_APPID2MASK(0))),
+#endif
+    /* .check =                  */ SPINLOCKCHECK_DISABLED,
+    /* .spin_id =                */ {{os_ioc_spinlock_id.upper()}},
+    /* .order =                  */ 0,
+};
+{%- endfor %}
+
+DeclareRtfwRefTable(OS_CONST_SECTION, spinlock, OS_SPINLOCK_CNT) = {
+{%- for spinlock in spinlock_cfg %}
+    &SPINLOCKCFGVAR({{spinlock.upper()}}),
+{%- endfor %}
+{%- for osmempool_spinlock_id in osmempool_spinlockid_set %}
+    &SPINLOCKCFGVAR({{osmempool_spinlock_id | upper}}),
+{%- endfor %}
+{%- for os_ioc_spinlock_id in os_ioc_spinlock_id_set %}
+    &SPINLOCKCFGVAR({{os_ioc_spinlock_id.upper()}}),
+{%- endfor %}
+};
+
+#endif /* (CONFIG_RT_FRAMEWORK_SPINLOCK == 1) */
+

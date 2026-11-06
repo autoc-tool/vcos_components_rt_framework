@@ -1,0 +1,49 @@
+ /*
+ * Description: Memory Protection Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#ifndef MEMORY_PROTECTION_CFG_H
+#define MEMORY_PROTECTION_CFG_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include <nuttx/config.h>
+#include <nuttx/irq.h>
+#include "rtfw_types.h"
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+{%- set mpu_cfg = get_mpu_cfg() %}
+{%- set app_cfg = get_app_cfg() %}
+
+{%- if mpu_cfg %}
+	{%- for coreid in mpu_cfg %}
+		{%- if coreid is number %}
+extern CONST(struct mpu_access_right_s, OS_CONST) core{{coreid}}_prestart_task_access_right;
+		{%- endif %}
+	{%- endfor %}
+	{%- for app_name, app_value in app_cfg.items() %}
+extern CONST(struct mpu_access_right_s, OS_CONST) {{app_name.lower()}}_access_right;
+		{%- for task_name in app_value["AppTaskList"] %}
+extern CONST(struct mpu_access_right_s, OS_CONST) {{task_name.lower()}}_access_right;
+		{%- endfor %}
+		{%- for isr_name in app_value["AppIsrList"] %}
+extern CONST(struct mpu_access_right_s, OS_CONST) {{isr_name.lower()}}_access_right;
+		{%- endfor %}
+	{%- endfor %}
+{%- endif %}
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif	 /* MEMORY_PROTECTION_CFG_H */

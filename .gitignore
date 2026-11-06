@@ -1,0 +1,14 @@
+# Misc
+*~
+.*.swp
+.DS_Store
+.idea
+nohup.out
+cscope*
+tags
+
+# python module build files
+*.pyc
+**/__pycache__/
+
+.checkpatch-camelcase.git.

@@ -1,0 +1,135 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Hook Callout Code
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+#include <nuttx/config.h>
+#include "rtfw_hook.h"
+
+{%- set hook_callout_code = get_hook_callout_code() %}
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get('head_usercode', []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+
+{%- set os_hook_cfg, os_hook_cnt = get_os_hook_cfg() %}
+{%- set all_apps_hook_cfg = get_app_hook_cfg() %}
+{%- set no_stack_hook_list = get_no_stack_hook_list() %}
+
+#define OS_START_SEC_CALLOUT_CODE
+#include "rtfw_memmap.h"
+
+{% if os_hook_cfg["os_errorhook"]["enabled"] %}
+FUNC(void, OS_CALLOUT_CODE) os_errorhook(StatusType Error)
+{
+    UNUSED(Error);
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get('os_errorhook', []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+
+}
+{%- endif %}
+{{'\n'}}
+{%- if os_hook_cfg["os_protectionhook"]["enabled"]  %}
+FUNC(protection_return_t, OS_CALLOUT_CODE) os_protectionhook(StatusType Error)
+{
+    UNUSED(Error);
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get('os_protectionhook', []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+    return PRO_TERMINATEAPPL;
+}
+{%- endif %}
+{{'\n'}}
+{%- if os_hook_cfg["os_shutdownhook"]["enabled"] %}
+FUNC(void, OS_CALLOUT_CODE) os_shutdownhook(StatusType Error)
+{
+    UNUSED(Error);
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get('os_shutdownhook', []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+}
+{%- endif %}
+{{'\n'}}
+{%- if os_hook_cfg["os_startuphook"]["enabled"] %}
+FUNC(void, OS_CALLOUT_CODE) os_startuphook(void)
+{
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get('os_startuphook', []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+}
+{%- endif %}
+{%- for hook_name in no_stack_hook_list %}
+{{'\n'}}
+FUNC(void, OS_CALLOUT_CODE) {{hook_name}}(void)
+{
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get(hook_name, []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+}
+{%- endfor%}
+{%- for app_hook_cfg in all_apps_hook_cfg.values() %}
+    {%- for app_hook_name, hook_cfg in app_hook_cfg.items() %}
+{{'\n'}}
+        {%- set func_name = "os_{}".format(hook_cfg['app_hook_name'].lower()) %}
+        {%- if "errorhook" in app_hook_name or 'shutdownhook' in app_hook_name %}
+FUNC(void, OS_CALLOUT_CODE) {{func_name}}(StatusType Error)
+{
+    UNUSED(Error);
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get(func_name, []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+}
+        {%- else %}
+FUNC(void, OS_CALLOUT_CODE) {{func_name}}(void)
+{
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get(func_name, []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+}
+        {%- endif %}
+    {%- endfor %}
+{%- endfor %}
+
+#define OS_STOP_SEC_CALLOUT_CODE
+#include "rtfw_memmap.h"
+
+/******************USER CODE STARTS!************THIS COMMENT WILL BE SAVED!***************/
+{%- for code_line in hook_callout_code.get('tail_usercode', []) %}
+{{code_line.strip('\n')}}
+{%- endfor%}
+/******************USER CODE ENDS!**************THIS COMMENT WILL BE SAVED!***************/
+

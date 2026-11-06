@@ -1,0 +1,153 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Core Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include <nuttx/config.h>
+#include "rtfw_core.h"
+#include "core_cfg.h"
+#include "rtfw_compiler_cfg.h"
+#include "application_cfg.h"
+#if defined(CONFIG_RT_FRAMEWORK_IPICALL) && (CONFIG_RT_FRAMEWORK_IPICALL == 1)
+#include "rtfw_ipicall.h"
+#include "ipicall_cfg.h"
+#endif
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+#include "memory_protection_cfg.h"
+#endif
+#if defined(CONFIG_RT_FRAMEWORK_RESOURCE) && (CONFIG_RT_FRAMEWORK_RESOURCE == 1)
+#include "rtfw_resource.h"
+#include "resource_cfg.h"
+#endif /* CONFIG_RT_FRAMEWORK_RESOURCE */
+#if defined(CONFIG_RT_FRAMEWORK_HOOK) && (CONFIG_RT_FRAMEWORK_HOOK == 1)
+#include "rtfw_hook.h"
+#include "hook_cfg.h"
+#endif /* CONFIG_RT_FRAMEWORK_HOOK */
+#if defined(CONFIG_RT_FRAMEWORK_IOC) && (CONFIG_RT_FRAMEWORK_IOC == 1)
+#include "rtfw_ioc.h"
+#include "ioc_cfg.h"
+#endif /* CONFIG_RT_FRAMEWORK_IOC */
+
+{%- set core_config = get_core_configs() %}
+{%- set core_ioc = get_ioc_cnt_by_core() %}
+{%- set hw2log = get_hw2log_map() %}
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+
+/* Physical ID as index, Logical ID as Value */
+CONST(uint32, OS_CONST) ulCoreIdTable[OS_CORE_PHYSICAL_CNT] = {
+{%- for ele in hw2log: %}
+    (uint32){{ele}},
+{%- endfor %}
+};
+
+{%- set log2hw = get_log2hw_map() %}
+/* Logical ID as index, Physical ID as Value */
+CONST(uint32, OS_CONST) ulCoreIdLog2PhyTable[OS_CORE_CNT] = {
+{%- for ele in log2hw: %}
+    (uint32){{ele}},
+{%- endfor %}
+};
+
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+{%- set app_cfg = get_app_cfg() %}
+{%- set os_hook_cfg, os_hook_cnt = get_os_hook_cfg() %}
+{%- for core, core_val in core_config.items() %}
+    {%- set core_num = core_val["core_id"][-1] %}
+    {%- set bsw_app_name = get_bsw_app_from_coreid(core_num) %}
+
+/*! Core{{core_num}} Configuration Implementation */
+DeclareCore(OS_CONST_SECTION, {{app_cfg[bsw_app_name]["AppInstSection"]}}, {{core}}) = {
+    /* .instance =               */ &OSCOREOBJVAR({{core}}),
+    /* .core_id =                */ {{core_val["core_id"]}},
+    /* .physical_id =            */ (CoreIdType){{core_val["PhyId"]}},
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+    /* .kernel_app =             */ (os_app_cfg_t*)&OSAPPCFGVAR({{bsw_app_name}}),
+    /* .app_ref =                */ os_core{{core_num}}_apps_cfg_ref_table,
+    /* .app_count =              */ &os_core{{core_num}}_apps_cfg_ref_table_size,
+#endif
+#if defined(CONFIG_RT_FRAMEWORK_IOC) && (CONFIG_RT_FRAMEWORK_IOC == 1)
+    {%- if core_ioc.get(core_val["core_id"], 0) > 0 %}
+    /* .ioc_refs =               */ os_core{{core_num}}_ioc_cfg_ref_table,
+    /* .ioc_count =              */ &os_core{{core_num}}_ioc_cfg_ref_table_size,
+    {%- else %}
+    /* .ioc_refs =               */ NULL_PTR,
+    /* .ioc_count =              */ NULL_PTR,
+    {%- endif %}
+#endif /* CONFIG_RT_FRAMEWORK_IOC */
+#if defined(CONFIG_RT_FRAMEWORK_IPICALL) && (CONFIG_RT_FRAMEWORK_IPICALL == 1)
+    /* .ipicall_refs =           */ os_core{{core_num}}_ipicalls_cfg_ref_table,
+    /* .ipicall_count =          */ &os_core{{core_num}}_ipicalls_cfg_ref_table_size,
+#endif /* CONFIG_RT_FRAMEWORK_IPICALL */
+#if defined(CONFIG_RT_FRAMEWORK_RESOURCE) && (CONFIG_RT_FRAMEWORK_RESOURCE == 1)
+    {%- set core_resource_map = get_core_referenced_resource() %}
+    {%- if core_resource_map[core_num|string] %}
+    /* .resource_refs =          */ os_core{{core_num}}_resource_cfg_ref_table,
+    /* .resource_count =         */ &os_core{{core_num}}_resource_cfg_ref_table_size,
+    {%- else %}
+    /* .resource_refs =          */ NULL_PTR,
+    /* .resource_count =         */ NULL_PTR,
+    {%- endif %}
+#endif /* CONFIG_RT_FRAMEWORK_RESOURCE */
+#if defined(CONFIG_RT_FRAMEWORK_HOOK) && (CONFIG_RT_FRAMEWORK_HOOK == 1)
+{%- if os_hook_cfg["os_startuphook"]["enabled"] %}
+    /* .startup_hook =           */ &HOOKCFGVAR(OS_CORE{{core_num}}_{{"os_startuphook".upper()}}_ID),
+{%- else %}
+    /* .startup_hook =           */ NULL_PTR,
+{%- endif %}
+{%- if os_hook_cfg["os_shutdownhook"]["enabled"] %}
+    /* .shutdown_hook =          */ &HOOKCFGVAR(OS_CORE{{core_num}}_{{"os_shutdownhook".upper()}}_ID),
+{%- else %}
+    /* .shutdown_hook =          */ NULL_PTR,
+{%- endif %}
+{%- if os_hook_cfg["os_errorhook"]["enabled"] %}
+    /* .error_hook =             */ &HOOKCFGVAR(OS_CORE{{core_num}}_{{"os_errorhook".upper()}}_ID),
+{%- else %}
+    /* .error_hook =             */ NULL_PTR,
+{%- endif %}
+{%- if os_hook_cfg["os_protectionhook"]["enabled"] %}
+    /* .protection_hook =        */ &HOOKCFGVAR(OS_CORE{{core_num}}_{{"os_protectionhook".upper()}}_ID),
+{%- else %}
+    /* .protection_hook =        */ NULL_PTR,
+{%- endif %}
+{%- if os_hook_cnt > 0 %}
+    /* .hook_refs =              */ os_core{{core_num}}_hook_cfg_ref_table,
+    /* .hook_count =             */ &os_core{{core_num}}_hook_cfg_ref_table_size,
+{%- else %}
+    /* .hook_refs =              */ NULL_PTR,
+    /* .hook_count =             */ NULL_PTR,
+{%- endif %}
+#endif
+#if defined(CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION) && (CONFIG_RT_FRAMEWORK_MEMORY_PROTECTION == 1)
+    /* .mpu_access_right =       */ &core{{core_num}}_prestart_task_access_right,
+#endif
+};
+{%- endfor %}
+
+DeclareRtfwRefTable(OS_CONST_SECTION, core, OS_CORE_CNT) = {
+{%- for core in core_config.values() %}
+    &OSCORECFGVAR(Os_Core{{core["core_id"][-1]}}),
+{%-endfor%}
+};
+

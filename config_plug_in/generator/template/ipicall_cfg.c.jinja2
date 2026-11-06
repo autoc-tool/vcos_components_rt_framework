@@ -1,0 +1,86 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Os IpiCall Configuration
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include <nuttx/config.h>
+#include "rtfw_ipicall.h"
+#include "ipicall_cfg.h"
+#include "rtfw_core.h"
+#include "core_cfg.h"
+#include "rtfw_compiler_cfg.h"
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+extern CONST(os_ipicall_service_t, OS_CONST) os_ipicall_service_table[];
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+
+{%- set core_cnt = get_core_cnt() %}
+{%- for this_core in range(core_cnt): %}
+    {%- for target_core in range(core_cnt) %}
+        {%- if this_core !=  target_core %}
+DeclareIpicall(OS_CONST_SECTION, OS_GLOBAL_BSS_SECTION, OS_CORE{{this_core}}_IPICALL{{target_core}}) = {
+  /* .instance =                */ &IPICALLOBJVAR(OS_CORE{{this_core}}_IPICALL{{target_core}}),
+  /* .ipicall_id =              */ OS_CORE{{this_core}}_IPICALL{{target_core}}_ID,
+  /* .src_core_id =             */ OS_CORE_ID_{{this_core}},
+  /* .target_core_id =          */ OS_CORE_ID_{{target_core}},
+  /* .service_ref =             */ os_ipicall_service_table
+};
+        {%- endif %}
+    {%- endfor %}
+{%- endfor %}
+
+{%- for this_core in range(core_cnt): %}
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+CONSTP2CONST(os_ipicall_cfg_t, OS_CONST, AUTOMATIC) os_core{{this_core}}_ipicalls_cfg_ref_table[] =
+{
+{%- for target_core in range(core_cnt) %}
+    {%- if this_core ==  target_core %}
+    NULL_PTR,
+    {%- else %}
+    &OSIPICALLCFGVAR(OS_CORE{{this_core}}_IPICALL{{target_core}}),
+    {%- endif %}
+{%- endfor %}
+{%- for target_core in range(core_cnt) %}
+    {%- if this_core ==  target_core %}
+    NULL_PTR,
+    {%- else %}
+    &OSIPICALLCFGVAR(OS_CORE{{target_core}}_IPICALL{{this_core}}),
+    {%- endif %}
+{%- endfor %}
+};
+CONST(OsObjIndexType, OS_CONST) os_core{{this_core}}_ipicalls_cfg_ref_table_size = (OsObjIndexType)NELEMENTS(os_core{{this_core}}_ipicalls_cfg_ref_table);
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"
+{%- endfor %}
+
+DeclareRtfwRefTable(OS_CONST_SECTION, ipicall, OS_IPICALL_CNT) = {
+{%- for this_core in range(core_cnt): %}
+    {%- for target_core in range(core_cnt) %}
+        {%- if this_core !=  target_core %}
+    &OSIPICALLCFGVAR(OS_CORE{{this_core}}_IPICALL{{target_core}}),
+        {%- endif %}
+    {%- endfor %}
+{%- endfor %}
+};

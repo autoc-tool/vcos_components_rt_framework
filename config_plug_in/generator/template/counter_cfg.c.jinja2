@@ -1,0 +1,96 @@
+/*
+ * Copyright (c) 2025 Li Auto Inc. and its affiliates
+ * Licensed under the Apache License, Version 2.0(the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Description: Counter Configuration.
+ * AutoGenerate Code, DO NOT EDIT!!!
+ * {{get_generation_time()}}
+ * {{get_project_name()}}
+ * {{get_vcos_version()}}
+ */
+
+/* Including File */
+#include <nuttx/config.h>
+#include "rtfw_counter.h"
+#include "counter_cfg.h"
+#include "application_cfg.h"
+#include "isr_cfg.h"
+#include "rtfw_compiler_cfg.h"
+
+{%- set counter_cfg = get_counter_cfg() %}
+{%- set app_cfg = get_app_cfg() %}
+
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppCounterList"] %}
+        {%- for counter in app_cfg[app]["AppCounterList"] %}
+            {%- if counter in counter_cfg %}
+                {%- set bsw_appname = app_cfg[app]["BswAppName"] %}
+DeclareCounter(OS_CONST_SECTION, {{app_cfg[bsw_appname]["AppInstSection"]}}, {{counter}}_cfg, {{counter_cfg[counter]["ActionCnt"]}}) = {
+    /* .obj_desc =               */ &COUNTEROBJVAR({{counter}}_cfg),
+    /* .action_queue =           */ COUNTERACTIONQUEUE({{counter}}_cfg),
+    /* .queue_total_size =       */ {{counter_cfg[counter]["ActionCnt"]}}u,
+    /* .counter_id =             */ {{counter}},
+    /* .counter_name =           */ "{{counter}}",
+    /* .max_allowed_value =      */ {{counter_cfg[counter]["CounterMaxAllowedValue"]}}uL,
+    /* .tick_per_base =          */ {{counter_cfg[counter]["CounterTicksPerBase"]}}uL,
+    /* .min_cycle =              */ {{counter_cfg[counter]["CounterMinCycle"]}}uL,
+    /* .ticks_per_ms =           */ {{counter_cfg[counter]["TicksPerMs"]}}uL,
+    /* .timer_type =             */ {{counter_cfg[counter]["TimerType"]}},
+#if defined(CONFIG_RT_FRAMEWORK_MULTIAPP) && (CONFIG_RT_FRAMEWORK_MULTIAPP== 1)
+    /* .owner_app_id =           */ {{app_cfg[app]["AppId"]}},
+                {%- set access_app = counter_cfg[counter]["CounterAccessApp"] + [app] %}
+                {%- set access_str = get_access_app_mask(access_app, index_size=49) %}
+    /* .access_app_mask =        */ ({{access_str}}),
+#endif
+};
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+
+/* Counter table Declaration */
+
+#define OS_START_SEC_CONST
+#include "rtfw_memmap.h"
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppCounterList"] %}
+
+CONSTP2CONST(os_counter_cfg_t, OS_CONST, AUTOMATIC) {{app_cfg[app]["AppCounterTable"]}}[] = {
+        {%- for counter in app_cfg[app]["AppCounterList"] %}
+            {%- if counter in counter_cfg %}
+    (os_counter_cfg_t*) &COUNTERCFGVAR({{counter}}_cfg),
+            {%- endif %}
+        {%- endfor %}
+};
+
+CONST(OsObjIndexType, OS_CONST) {{app_cfg[app]["AppCounterTable"]}}_size = (OsObjIndexType)NELEMENTS({{app_cfg[app]["AppCounterTable"]}});
+    {%- endif %}
+{%- endfor %}
+
+CONSTP2CONST(os_counter_cfg_t, OS_CONST, AUTOMATIC) os_counter_cfg_ref_table[] = {
+{%- for app in app_cfg %}
+    {%- if app_cfg[app]["AppCounterList"] %}
+        {%- for counter in app_cfg[app]["AppCounterList"] %}
+            {%- if counter in counter_cfg %}
+    (os_counter_cfg_t*) &COUNTERCFGVAR({{counter}}_cfg),
+            {%- endif %}
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+};
+
+CONST(OsObjIndexType, OS_CONST) os_counter_cfg_ref_table_size = OS_COUNTER_CNT;
+#define OS_STOP_SEC_CONST
+#include "rtfw_memmap.h"

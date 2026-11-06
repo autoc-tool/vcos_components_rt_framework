@@ -1,0 +1,123 @@
+{
+    "1.2":
+    {
+        "is_exported": true,
+        "releated_module_list": ["EcuC", "Os"],
+        "sheet":
+        {
+            "EcucCoreDefinition":
+            {
+                "header":
+                {
+                    "EcucCoreDefinition(s)": [[1, 1, 1, 1], "/AUTOSAR/EcucDefs/EcuC/EcucHardware/EcucCoreDefinition"],
+                    "EcucCoreId": [[1, 1, 2, 2], "/AUTOSAR/EcucDefs/EcuC/EcucHardware/EcucCoreDefinition/EcucCoreId"],
+                    "EcucCoreHwRef": [[1, 1, 3, 3], "/AUTOSAR/EcucDefs/EcuC/EcucHardware/EcucCoreDefinition/EcucCoreHwRef"]
+                },
+                "config_releation":
+                {
+                    "EcucCoreDefinition(s)": ["EcucCoreId", "EcucCoreHwRef"]
+                }
+            },
+            "EcucPartition":
+            {
+                "header":
+                {
+                    "EcucPartition(s)": [[1, 1, 1, 1], "/AUTOSAR/EcucDefs/EcuC/EcucPartitionCollection/EcucPartition"],
+                    "ASIL": [[1, 1, 2, 2], "/AUTOSAR/EcucDefs/EcuC/EcucPartitionCollection/EcucPartition/ASIL"]
+                },
+                "config_releation":
+                {
+                    "EcucPartition(s)": ["ASIL"]
+                }
+            },
+            "APP_TASK":
+            {
+                "header":
+                {
+                    "OsApps": [[1, 1, 1, 1], "/AUTOSAR/EcucDefs/Os/OsApplication"],
+                    "OsTasks": [[1, 1, 2, 2], "/AUTOSAR/EcucDefs/Os/OsTask"],
+                    "Task Type": [[1, 1, 3, 3], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskType"],
+                    "Task Priority": [[1, 1, 4, 4], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskPriority"],
+                    "Task Stack Size [Byte]": [[1, 1, 5, 5], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskStackSize"],
+                    "Task Event": [[1, 1, 6, 6], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskEventRef", "/ActiveEcuC/Os/"],
+                    "Task所属": [[1, 1, 7, 7], null]
+                },
+                "config_releation":
+                {}
+            },
+            "OsApplication":
+            {
+                "header":
+                {
+                    "OsApplication(s)": [[1, 1, 1, 1], "/AUTOSAR/EcucDefs/Os/OsApplication"],
+                    "OsIsPrivileged": [[1, 1, 2, 2], "/AUTOSAR/EcucDefs/Os/OsApplication/OsIsPrivileged"],
+                    "OsAppEcucPartitionRef": [[1, 1, 3, 3], "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppEcucPartitionRef", "/ActiveEcuC/EcuC/EcucPartitionCollection/"],
+                    "OsApplicationCoreRef": [[1, 1, 4, 4], "/AUTOSAR/EcucDefs/Os/OsApplication/OsApplicationCoreRef", "/ActiveEcuC/EcuC/EcucHardware/"],
+                    "OsAppCounterRef": [[1, 1, 5, 5], "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppCounterRef", "/ActiveEcuC/Os/"],
+                    "OsAppTaskRef": [[1, 1, 6, 6], "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppTaskRef", "/ActiveEcuC/Os/"],
+                    "OsAppScheduleTableRef": [[1, 1, 7, 7], "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppScheduleTableRef", "/ActiveEcuC/Os/"],
+                    "OsAppIsrRef": [[1, 1, 8, 8], "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppIsrRef", "/ActiveEcuC/Os/"]
+                },
+                "config_releation":
+                {
+                    "OsApplication(s)": ["OsIsPrivileged", "OsAppEcucPartitionRef", 
+                                        "OsApplicationCoreRef", "OsAppCounterRef",
+                                         "OsAppTaskRef", "OsAppScheduleTableRef", "OsAppIsrRef"]
+                }
+            },
+            "OsTask":
+            {
+                "header":
+                {
+                    "OsTask(s)": [[1, 1, 1, 1], "/AUTOSAR/EcucDefs/Os/OsTask"],
+                    "OsTaskUsesFpu": [[1, 1, 2, 2], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskUsesFpu"],
+                    "OsTaskSchedule": [[1, 1, 3, 3], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskSchedule"],
+                    "OsTaskType": [[1, 1, 4, 4], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskType"],
+                    "OsTaskActivation": [[1, 1, 5, 5], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskActivation"],
+                    "OsTaskPriority": [[1, 1, 6, 6], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskPriority"],
+                    "OsTaskStackSize": [[1, 1, 7, 7], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskStackSize"],
+                    "OsTaskEventRef": [[1, 1, 8, 8], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskEventRef", "/ActiveEcuC/Os/"],
+                    "OsTaskAccessingApplication": [[1, 1, 9, 9], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskAccessingApplication", "/ActiveEcuC/Os/"],
+                    "OsTaskAutostart": [[1, 1, 10, 10], "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskAutostart", "/ActiveEcuC/Os/"]
+                },
+                "config_releation":
+                {
+                    "OsTask(s)": ["OsTaskUsesFpu", "OsTaskSchedule", "OsTaskType",
+                                  "OsTaskActivation", "OsTaskPriority", "OsTaskStackSize",
+                                  "OsTaskEventRef", "OsTaskAccessingApplication"]
+                }
+            },
+            "OsIsr":
+            {
+                "header":
+                {
+                    "OsIsr(s)": [[1, 1, 1, 1], "/AUTOSAR/EcucDefs/Os/OsIsr"],
+                    "OsIsrInitialEnableInterruptSource": [[1, 1, 2, 2], "/AUTOSAR/EcucDefs/Os/OsIsr/OsIsrInitialEnableInterruptSource"],
+                    "OsIsrCategory": [[1, 1, 3, 3], "/AUTOSAR/EcucDefs/Os/OsIsr/OsIsrCategory"],
+                    "OsIsrInterruptPriority": [[1, 1, 4, 4], "/AUTOSAR/EcucDefs/Os/OsIsr/OsIsrInterruptPriority"],
+                    "OsIsrInterruptSource": [[1, 1, 5, 5], "/AUTOSAR/EcucDefs/Os/OsIsr/OsIsrInterruptSource"],
+                    "OsIsrEntryFunctionName": [[1, 1, 6, 6], "/AUTOSAR/EcucDefs/Os/OsIsr/OsIsrEntryFunctionName"],
+                    "所属Application": [[1, 1, 7, 7], null]
+                },
+                "config_releation":
+                {
+                    "OsIsr(s)": ["OsIsrInitialEnableInterruptSource", "OsIsrCategory", 
+                                 "OsIsrInterruptPriority", "OsIsrInterruptSource", "OsIsrEntryFunctionName"]
+                }
+            },
+            "OsEvent":
+            {
+                "header":
+                {
+                    "OsEvent(s)": [[1, 1, 1, 1], "/AUTOSAR/EcucDefs/Os/OsEvent"],
+                    "OsEventMask": [[1, 1, 2, 2], "/AUTOSAR/EcucDefs/Os/OsEvent/OsEventMask"],
+                    "所属Task": [[1, 1, 3, 3], null]
+                },
+                "config_releation":
+                {
+                    "OsEvent(s)": ["OsEventMask"]
+                }
+            }
+        }
+    }
+}

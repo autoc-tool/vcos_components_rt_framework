@@ -1,0 +1,361 @@
+{
+    "OS011002": {
+        "rule_name": "OS011002",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsIocSenderId.",
+        "rule_message": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocSenderProperties/OsIocSenderId should be unique.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocSenderProperties/OsIocSenderId",
+            "base_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication"
+        },
+        "auto_solve_list": [
+            {
+                "solve_info": "Repopulate /AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocSenderProperties/OsIocSenderId values automatically.",
+                "solve_type": "Repopulate_value",
+                "parameter": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication",
+                "value": ""
+            }
+        ],
+        "manual_solve_list": []
+    },
+    "OS011004": {
+        "rule_name": "OS011004",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsIocReceiverId.",
+        "rule_message": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocReceiverProperties/OsIocReceiverId should be unique.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocReceiverProperties/OsIocReceiverId",
+            "base_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication"
+        },
+        "auto_solve_list": [
+            {
+                "solve_info": "Repopulate /AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocReceiverProperties/OsIocReceiverId values automatically.",
+                "solve_type": "Repopulate_value",
+                "parameter": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication",
+                "value": ""
+            }
+        ],
+        "manual_solve_list": []
+    },
+    "OS012003": {
+        "rule_name": "OS012003",
+        "rule_type": "same_container_linkage_check",
+        "rule_summary": "The linkage check of OsScheduleTableAutostartType and OsScheduleTableStartValue.",
+        "rule_message": "If OsScheduleTableAutostartType is 'ABSOLUTE' or 'RELATIVE', OsScheduleTableStartValue must be configured.",
+        "rule_ruleset": {
+            "ruleset_01": {
+                "base_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableAutostart",
+                "condition": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableAutostart/OsScheduleTableAutostartType",
+                        "value_operator": "==",
+                        "value": "ABSOLUTE",
+                        "logical_operator": "or"
+                    },
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableAutostart/OsScheduleTableAutostartType",
+                        "value_operator": "==",
+                        "value": "RELATIVE",
+                        "logical_operator": "or"
+                    }
+                ],
+                "judgement": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableAutostart/OsScheduleTableStartValue",
+                        "value_operator": "!=",
+                        "value": "",
+                        "logical_operator": "and"
+                    },
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableAutostart/OsScheduleTableStartValue",
+                        "value_operator": "!=",
+                        "value": null,
+                        "logical_operator": "and"
+                    },
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableAutostart/OsScheduleTableStartValue",
+                        "value_operator": "!=",
+                        "value": "<empty>",
+                        "logical_operator": "and"
+                    }
+                ]
+            }
+        }
+    },
+    "OS013003": {
+        "rule_name": "OS013003",
+        "rule_type": "same_container_linkage_check",
+        "rule_summary": "The linkage check of OsIsPrivileged, OsTrusted and OsTrustedApplicationWithProtection.",
+        "rule_message": "If OsTrusted is true and OsTrustedApplicationWithProtection is false, OsIsPrivileged must be true; If OsTrusted is true and  OsTrustedApplicationWithProtection is true, OsIsPrivileged must be false; If OsTrusted is false,OsIsPrivileged must be false.",
+        "rule_ruleset": {
+            "ruleset_01": {
+                "base_path": "/AUTOSAR/EcucDefs/Os/OsApplication",
+                "condition": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsTrusted",
+                        "value_operator": "==",
+                        "value": true,
+                        "logical_operator": "and"
+                    },
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsTrustedApplicationWithProtection",
+                        "value_operator": "==",
+                        "value": false,
+                        "logical_operator": "and"
+                    }
+                ],
+                "judgement": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsIsPrivileged",
+                        "value_operator": "==",
+                        "value": true,
+                        "logical_operator": "and"
+                    }
+                ]
+            },
+            "ruleset_02": {
+                "base_path": "/AUTOSAR/EcucDefs/Os/OsApplication",
+                "condition": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsTrusted",
+                        "value_operator": "==",
+                        "value": true,
+                        "logical_operator": "and"
+                    },
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsTrustedApplicationWithProtection",
+                        "value_operator": "==",
+                        "value": true,
+                        "logical_operator": "and"
+                    }
+                ],
+                "judgement": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsIsPrivileged",
+                        "value_operator": "==",
+                        "value": false,
+                        "logical_operator": "and"
+                    }
+                ]
+            },
+            "ruleset_03": {
+                "base_path": "/AUTOSAR/EcucDefs/Os/OsApplication",
+                "condition": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsTrusted",
+                        "value_operator": "==",
+                        "value": false,
+                        "logical_operator": "and"
+                    }
+                ],
+                "judgement": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsIsPrivileged",
+                        "value_operator": "==",
+                        "value": false,
+                        "logical_operator": "and"
+                    }
+                ]
+            }
+        }
+    },
+    "OS013004": {
+        "rule_name": "OS013004",
+        "rule_type": "same_container_linkage_check",
+        "rule_summary": "The linkage check of OsTaskType and OsTaskActivation.",
+        "rule_message": "If OsTaskActivation is greater than 1, OsTaskType must be 'BASIC'.",
+        "rule_ruleset": {
+            "ruleset_01": {
+                "base_path": "/AUTOSAR/EcucDefs/Os/OsTask",
+                "condition": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskActivation",
+                        "value_operator": ">",
+                        "value": 1,
+                        "logical_operator": "and"
+                    }
+                ],
+                "judgement": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskType",
+                        "value_operator": "==",
+                        "value": "BASIC",
+                        "logical_operator": "and"
+                    }
+                ]
+            }
+        }
+    },
+    "OS013010": {
+        "rule_name": "OS013010",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsScheduleTblExpPointOffset.",
+        "rule_message": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableExpiryPoint/OsScheduleTblExpPointOffset should be unique in one OsScheduleTableExpiryPoint.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable/OsScheduleTableExpiryPoint/OsScheduleTblExpPointOffset",
+            "base_path": "/AUTOSAR/EcucDefs/Os/OsScheduleTable"
+        },
+        "auto_solve_list": [],
+        "manual_solve_list": []
+    },
+    "OS013012": {
+        "rule_name": "OS013012",
+        "rule_type": "same_container_linkage_check",
+        "rule_summary": "The linkage check of OsIsrTimingProtection.",
+        "rule_message": "OsIsrTimingProtection is not available for CATEGORY_1 ISR.",
+        "rule_ruleset": {
+            "ruleset_01": {
+                "base_path": "/AUTOSAR/EcucDefs/Os/OsIsr",
+                "condition": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsIsr/OsIsrTimingProtection",
+                        "value_operator": "!=",
+                        "value": null,
+                        "logical_operator": "and"
+                    }
+                ],
+                "judgement": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsIsr/OsIsrCategory",
+                        "value_operator": "!=",
+                        "value": "CATEGORY_1",
+                        "logical_operator": "and"
+                    }
+                ]
+            }
+        }
+    },
+    "OS013013": {
+        "rule_name": "OS013013",
+        "rule_type": "same_container_linkage_check",
+        "rule_summary": "The linkage check of OsIocReceiverPullCB.",
+        "rule_message": "If OsIocReceiverPullCB exists, OsIocCallback Hook Stack must be greater than or equal to 128, and be multiple of 4 and not to be none.",
+        "rule_ruleset": {
+            "ruleset_01": {
+                "base_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication",
+                "condition": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocReceiverProperties/OsIocReceiverPullCB",
+                        "value_operator": "!=",
+                        "value": null,
+                        "logical_operator": "and"
+                    }
+                ],
+                "judgement": [
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocReceiverProperties/OsIocCallback Hook Stack",
+                        "value_operator": "!=",
+                        "value": null,
+                        "logical_operator": "and"
+                    },
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocReceiverProperties/OsIocCallback Hook Stack",
+                        "value_operator": ">=",
+                        "value": 128,
+                        "logical_operator": "and"
+                    },
+                    {
+                        "mod_path": "/AUTOSAR/EcucDefs/Os/OsIoc/OsIocCommunication/OsIocReceiverProperties/OsIocCallback Hook Stack",
+                        "value_operator": "%4 ==",
+                        "value": 0,
+                        "logical_operator": "and"
+                    }
+                ]
+            }
+        }
+    },
+    "OS014003": {
+        "rule_name": "OS014003",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsAppCounterRef.",
+        "rule_message": "An Counter must belong to one Application.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppCounterRef",
+            "base_path": "/AUTOSAR/EcucDefs/Os"
+        }
+    },
+    "OS014004": {
+        "rule_name": "OS014004",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsAppIsrRef.",
+        "rule_message": "An Isr must belong to an Application.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppIsrRef",
+            "base_path": "/AUTOSAR/EcucDefs/Os"
+        }
+    },
+    "OS014005": {
+        "rule_name": "OS014005",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsAppScheduleTableRef.",
+        "rule_message": "An ScheduleTable must belong to an Application.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppScheduleTableRef",
+            "base_path": "/AUTOSAR/EcucDefs/Os"
+        }
+    },
+    "OS014006": {
+        "rule_name": "OS014006",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsAppTaskRef.",
+        "rule_message": "An Task must belong to an Application.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppTaskRef",
+            "base_path": "/AUTOSAR/EcucDefs/Os"
+        }
+    },
+    "OS014010": {
+        "rule_name": "OS014010",
+        "rule_type": "diff_container_linkage_check",
+        "rule_summary": "The check of OsTaskStackSize.",
+        "rule_message": "The value of OsTaskStackSize is greater than or equal to 128 and is an integer multiple of 4.",
+        "rule_ruleset": {
+            "ruleset_01": {
+                "judgement": {
+                    "mod_path": ["/AUTOSAR/EcucDefs/Os/OsTask/OsTaskStackSize"],
+                    "judge_expression": "%0 % 4 == 0 and %0 >= 128"
+                },
+                "auto_solve_list": [{
+                    "solve_info": "Set the value of /AUTOSAR/EcucDefs/Os/OsTask/OsTaskStackSize to minimum(value=128).",
+                    "solve_type": "SetValue",
+                    "parameter": "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskStackSize",
+                    "value": 128
+                }]
+            }
+        }
+    },
+    "OS014011": {
+        "rule_name": "OS014011",
+        "rule_type": "diff_container_linkage_check",
+        "rule_summary": "The check of OsTaskStackSize.",
+        "rule_message": "The value of OsTaskStackSize must be greater than or equal to the configured min_osTaskStackSize.",
+        "rule_ruleset": {
+            "ruleset_01": {
+                "judgement": {
+                    "mod_path": ["/AUTOSAR/EcucDefs/Os/OsTask/OsTaskStackSize"],
+                    "judge_expression": "bool(self.validation_data.sys_info_class.target) and %0 >= self.validation_data.sys_info_class.system_target_info.get('validate',{}).get('ignore_option',{}).get('Os',{}).get('min_OsTaskStackSize', 128)"
+                }
+            }
+        }
+    },
+    "OS014017": {
+        "rule_name": "OS014017",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsTaskEventRef.",
+        "rule_message": "An OsTaskEventRef can be referenced by a task only once.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsTask/OsTaskEventRef",
+            "base_path": "/AUTOSAR/EcucDefs/Os"
+        }
+    },
+    "OS013014": {
+        "rule_name": "OS013014",
+        "rule_type": "repeatability_check",
+        "rule_summary": "Repeatablity check of OsAppEcucPartitionRef.",
+        "rule_message": "The ecuc partition should only be referred by one OsApplication.",
+        "rule_ruleset": {
+            "mod_path": "/AUTOSAR/EcucDefs/Os/OsApplication/OsAppEcucPartitionRef",
+            "base_path": "/AUTOSAR/EcucDefs/Os"
+        }
+    }
+}
