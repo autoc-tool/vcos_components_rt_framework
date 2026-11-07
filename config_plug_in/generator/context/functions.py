@@ -14,6 +14,7 @@
 ############################################################################
 import os, sys, math, re
 from components.rt_framework.config_plug_in.generator import utils
+from components.rt_framework.config_plug_in.os_platform_cfg import resolve_os_int_level_cfg
 from func_module.generator.common.common import FunctionBase
 from func_module.generator.common.user_code_extract import UserCodeExtract
 from components.memory.mempool.config_plug_in.generator.utils import get_os_mempool_all_config_dict
@@ -1435,7 +1436,12 @@ class Function(FunctionBase):
     def get_int_level_cfg_marcos(context):
         ret = []
 
-        int_level_cfg = utils.get_dict_path(context, ['sys_cfg', 'sys_target_dict', 'validate', 'ignore_option', 'Os'])
+        sys_cfg = context['sys_cfg']
+        int_level_cfg = resolve_os_int_level_cfg(
+            sys_cfg.get('sys_target_dict'),
+            sys_cfg.get('target'),
+            utils.get_dict_path(sys_cfg, ['path', 'system_path']) or "",
+        )
         ret += [
             f'CONFIG_RT_FRAMEWORK_MAX_INT_LEVEL={int_level_cfg["max_interrupt_priority"]}',
             f'CONFIG_RT_FRAMEWORK_MIN_INT_LEVEL={int_level_cfg["min_interrupt_priority"]}',
