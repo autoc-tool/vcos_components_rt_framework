@@ -19,6 +19,7 @@ import shutil
 from func_module.health_monitor.logger import logger
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from .utils import get_last_item, get_dict_path
+from components.rt_framework.config_plug_in.os_platform_cfg import resolve_os_int_level_cfg
 
 from . import context
 
@@ -40,26 +41,42 @@ def get_os_core_info(ecuc_dict: dict):
 
     return ret
 
+def _write_file(file_path, content, backup_existing=False):
+    if backup_existing and os.path.exists(file_path):
+        shutil.copy(file_path, file_path + '.bak')
+    with open(file_path, "w", encoding="utf-8") as out_stream:
+        out_stream.write(content)
+        out_stream.flush()
+    logger.info("Finish generating %s file" % (os.path.basename(file_path)))
+
 def render_os_template(template, out_dir, file_name, config):
     if template is not None:
-        file_path = os.path.join(out_dir, file_name)
-        with open(file_path, "w", encoding="utf-8") as out_stream:
-            out_stream.write(template.render(config))
-            out_stream.flush()
-        logger.info("Finish generating %s file" % (file_name))
+        content = template.render(config)
+        _write_file(os.path.join(out_dir, file_name), content)
 
 def render_os_callout_template(template, out_dir, file_name, config):
     if template is not None:
-        file_path = os.path.join(out_dir, file_name)
-        if os.path.exists(file_path):
-            backup_file_path = file_path + '.bak'
-            shutil.copy(file_path, backup_file_path)
-        render_output = template.render(config)
-        with open(file_path, "w", encoding="utf-8") as out_stream:
-            out_stream.write(render_output)
-            out_stream.flush()
-        logger.info("Finish generating %s file" % (file_name))
+        content = template.render(config)
+        _write_file(os.path.join(out_dir, file_name), content, backup_existing=True)
 
+
+class _BufferedOutput:
+    """Collects rendered Os files so nothing is written unless every template renders."""
+
+    def __init__(self):
+        self.files = []
+
+    def render_os_template(self, template, out_dir, file_name, config):
+        if template is not None:
+            self.files.append((os.path.join(out_dir, file_name), template.render(config), False))
+
+    def render_os_callout_template(self, template, out_dir, file_name, config):
+        if template is not None:
+            self.files.append((os.path.join(out_dir, file_name), template.render(config), True))
+
+    def write(self):
+        for file_path, content, backup_existing in self.files:
+            _write_file(file_path, content, backup_existing)
 
 def prepare_os_base_config(sys_config:dict, config_dict:dict):
     # get EcuC Configs
@@ -83,6 +100,15 @@ def prepare_os_base_config(sys_config:dict, config_dict:dict):
 def generate_dynamic_code(sys_config: dict, config_dict: dict):
     context.Function.clear_caches()
 
+    # Resolve platform data and render every template before writing anything:
+    # a partial Os output (e.g. an empty rt_framework.config) looks generated
+    # but cannot be built.
+    resolve_os_int_level_cfg(
+        sys_config.get("sys_target_dict"),
+        sys_config.get("target"),
+        get_dict_path(sys_config, ['path', 'system_path']) or "",
+    )
+
     output_dir = os.path.realpath(
         os.path.join(sys_config["gendata_path"], "Os"))
     callout_dir = get_dict_path(sys_config, ['path', 'bswcallout_path'])
@@ -90,6 +116,7 @@ def generate_dynamic_code(sys_config: dict, config_dict: dict):
         os.makedirs(callout_dir)
 
     config = prepare_os_base_config(sys_config, config_dict)
+    output = _BufferedOutput()
 
     # Build our rendering environment.
     env_ui = Environment(loader=FileSystemLoader(DEFAULT_TEMPLATE_FILE_DIR),
@@ -101,139 +128,140 @@ def generate_dynamic_code(sys_config: dict, config_dict: dict):
     #    TASK                                            #
     # ################################################## #
     template = env_ui.get_template("task_cfg.h.jinja2")
-    render_os_template(template, output_dir, "task_cfg.h", config)
+    output.render_os_template(template, output_dir, "task_cfg.h", config)
 
     template = env_ui.get_template("task_cfg.c.jinja2")
-    render_os_template(template, output_dir, "task_cfg.c", config)
+    output.render_os_template(template, output_dir, "task_cfg.c", config)
 
     # ################################################## #
     #    STACK                                           #
     # ################################################## #
     template = env_ui.get_template("stack_cfg.h.jinja2")
-    render_os_template(template, output_dir, "stack_cfg.h", config)
+    output.render_os_template(template, output_dir, "stack_cfg.h", config)
 
     # ################################################## #
     #    APPLICATION                                     #
     # ################################################## #
     template = env_ui.get_template("application_cfg.h.jinja2")
-    render_os_template(template, output_dir, "application_cfg.h", config)
+    output.render_os_template(template, output_dir, "application_cfg.h", config)
 
     template = env_ui.get_template("application_cfg.c.jinja2")
-    render_os_template(template, output_dir, "application_cfg.c", config)
+    output.render_os_template(template, output_dir, "application_cfg.c", config)
 
     # ################################################## #
     #    CORE                                            #
     # ################################################## #
     template = env_ui.get_template("core_cfg.c.jinja2")
-    render_os_template(template, output_dir, "core_cfg.c", config)
+    output.render_os_template(template, output_dir, "core_cfg.c", config)
 
     template = env_ui.get_template("core_cfg.h.jinja2")
-    render_os_template(template, output_dir, "core_cfg.h", config)
+    output.render_os_template(template, output_dir, "core_cfg.h", config)
 
     # ################################################## #
     #    IpiCall                                         #
     # ################################################## #
     template = env_ui.get_template("ipicall_cfg.c.jinja2")
-    render_os_template(template, output_dir, "ipicall_cfg.c", config)
+    output.render_os_template(template, output_dir, "ipicall_cfg.c", config)
 
     template = env_ui.get_template("ipicall_cfg.h.jinja2")
-    render_os_template(template, output_dir, "ipicall_cfg.h", config)
+    output.render_os_template(template, output_dir, "ipicall_cfg.h", config)
 
     # ################################################## #
     #    ISR                                             #
     # ################################################## #
     template = env_ui.get_template("isr_cfg.c.jinja2")
-    render_os_template(template, output_dir, "isr_cfg.c", config)
+    output.render_os_template(template, output_dir, "isr_cfg.c", config)
 
     if sys_config['target'] == "AURIX2G_TC397":
         template = env_ui.get_template("tricore_irq_dispatch.c.jinja2")
-        render_os_template(template, output_dir, "tricore_irq_dispatch.c", config)
+        output.render_os_template(template, output_dir, "tricore_irq_dispatch.c", config)
 
     template = env_ui.get_template("isr_cfg.h.jinja2")
-    render_os_template(template, output_dir, "isr_cfg.h", config)
+    output.render_os_template(template, output_dir, "isr_cfg.h", config)
 
     # ################################################## #
     #    IOC                                             #
     # ################################################## #
     template = env_ui.get_template("ioc.c.jinja2")
-    render_os_template(template, output_dir, "ioc.c", config)
+    output.render_os_template(template, output_dir, "ioc.c", config)
 
     template = env_ui.get_template("ioc.h.jinja2")
-    render_os_template(template, output_dir, "ioc.h", config)
+    output.render_os_template(template, output_dir, "ioc.h", config)
 
     template = env_ui.get_template("ioc_cfg.c.jinja2")
-    render_os_template(template, output_dir, "ioc_cfg.c", config)
+    output.render_os_template(template, output_dir, "ioc_cfg.c", config)
 
     template = env_ui.get_template("ioc_cfg.h.jinja2")
-    render_os_template(template, output_dir, "ioc_cfg.h", config)
+    output.render_os_template(template, output_dir, "ioc_cfg.h", config)
 
     # ################################################## #
     #    SPINLOCK                                        #
     # ################################################## #
     template = env_ui.get_template("spinlock_cfg.h.jinja2")
-    render_os_template(template, output_dir, "spinlock_cfg.h", config)
+    output.render_os_template(template, output_dir, "spinlock_cfg.h", config)
 
     template = env_ui.get_template("spinlock_cfg.c.jinja2")
-    render_os_template(template, output_dir, "spinlock_cfg.c", config)
+    output.render_os_template(template, output_dir, "spinlock_cfg.c", config)
 
     # ################################################## #
     #    EVENT                                           #
     # ################################################## #
     template = env_ui.get_template("event_cfg.h.jinja2")
-    render_os_template(template, output_dir, "event_cfg.h", config)
+    output.render_os_template(template, output_dir, "event_cfg.h", config)
 
     # ################################################## #
     #    SCHEDTABLE                                      #
     # ################################################## #
     template = env_ui.get_template("schedtable_cfg.h.jinja2")
-    render_os_template(template, output_dir, "schedtable_cfg.h", config)
+    output.render_os_template(template, output_dir, "schedtable_cfg.h", config)
 
     template = env_ui.get_template("schedtable_cfg.c.jinja2")
-    render_os_template(template, output_dir, "schedtable_cfg.c", config)
+    output.render_os_template(template, output_dir, "schedtable_cfg.c", config)
 
     # ################################################## #
     #    RESOURCE                                        #
     # ################################################## #
     template = env_ui.get_template("resource_cfg.h.jinja2")
-    render_os_template(template, output_dir, "resource_cfg.h", config)
+    output.render_os_template(template, output_dir, "resource_cfg.h", config)
 
     template = env_ui.get_template("resource_cfg.c.jinja2")
-    render_os_template(template, output_dir, "resource_cfg.c", config)
+    output.render_os_template(template, output_dir, "resource_cfg.c", config)
 
     # ################################################## #
     #    COUNTER                                         #
     # ################################################## #
     template = env_ui.get_template("counter_cfg.h.jinja2")
-    render_os_template(template, output_dir, "counter_cfg.h", config)
+    output.render_os_template(template, output_dir, "counter_cfg.h", config)
 
     template = env_ui.get_template("counter_cfg.c.jinja2")
-    render_os_template(template, output_dir, "counter_cfg.c", config)
+    output.render_os_template(template, output_dir, "counter_cfg.c", config)
 
     # ################################################## #
     #    MEMORY PROTECTION                               #
     # ################################################## #
     template = env_ui.get_template("memory_protection_cfg.h.jinja2")
-    render_os_template(template, output_dir, "memory_protection_cfg.h", config)
+    output.render_os_template(template, output_dir, "memory_protection_cfg.h", config)
 
     template = env_ui.get_template("memory_protection_cfg.c.jinja2")
-    render_os_template(template, output_dir, "memory_protection_cfg.c", config)
+    output.render_os_template(template, output_dir, "memory_protection_cfg.c", config)
 
     # ################################################## #
     #    Hook                                            #
     # ################################################## #
     template = env_ui.get_template("hook_user_callout.c.jinja2")
-    render_os_callout_template(template, callout_dir, "hook_user_callout.c", config)
+    output.render_os_callout_template(template, callout_dir, "hook_user_callout.c", config)
 
     template = env_ui.get_template("hook_cfg.c.jinja2")
-    render_os_template(template, output_dir, "hook_cfg.c", config)
+    output.render_os_template(template, output_dir, "hook_cfg.c", config)
 
     template = env_ui.get_template("hook_cfg.h.jinja2")
-    render_os_template(template, output_dir, "hook_cfg.h", config)
+    output.render_os_template(template, output_dir, "hook_cfg.h", config)
 
     # ################################################## #
     #    rt_framework.config                             #
     # ################################################## #
     template = env_ui.get_template("rt_framework.config.jinja2")
-    render_os_template(template, output_dir, "rt_framework.config", config)
+    output.render_os_template(template, output_dir, "rt_framework.config", config)
 
+    output.write()
     return True
