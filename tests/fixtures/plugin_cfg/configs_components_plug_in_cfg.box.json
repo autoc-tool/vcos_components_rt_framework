@@ -1,0 +1,577 @@
+{
+    "target": {
+        "AURIX2G_TC397": {
+            "DERIVATIVE_GROUP": "TC3XX",
+            "CPU_CORE": "TriCore",
+            "compiler": [
+                "gcc",
+                "tasking"
+            ],
+            "Os": {},
+            "MCAL_VERSION": [
+                "MC-ISAR_AS422_TC3xx_BASIC_1.40.0"
+            ]
+        },
+        "FC7300F8MDT": {
+            "DERIVATIVE_GROUP": "FC7XXX",
+            "CPU_CORE": "ARM_CM7",
+            "compiler": [
+                "gcc"
+            ],
+            "Os": {},
+            "MCAL_VERSION": [
+                "Flagchip_AutoSAR_MCAL_package_v1.4.1"
+            ]
+        },
+        "E3650": {
+            "DERIVATIVE_GROUP": "E3XX",
+            "CPU_CORE": "ARM_CR52",
+            "compiler": [
+                "gcc"
+            ],
+            "Os": {},
+            "MCAL_VERSION": [
+                "Semidrive_AutoSAR_MCAL_package_v5.1.0"
+            ]
+        },
+        "J6E": {
+            "DERIVATIVE_GROUP": "J6XX",
+            "CPU_CORE": "ARM_CR52",
+            "compiler": [
+                "ghs"
+            ],
+            "Os": {},
+            "MCAL_VERSION": [
+                "Horizon_Robotics_MCAL_package_v241115"
+            ]
+        },
+        "Sim_Common": {
+            "DERIVATIVE_GROUP": "Sim",
+            "CPU_CORE": "TriCore",
+            "compiler": [
+                "gcc"
+            ],
+            "Os": {},
+            "MCAL_VERSION": [
+                "MC-ISAR_AS422_TC3xx_BASIC_2.10.0"
+            ]
+        },
+        "PC_Common": {
+            "DERIVATIVE_GROUP": "PC",
+            "CPU_CORE": "X86",
+            "compiler": [
+                "vs20xx"
+            ],
+            "Os": {},
+            "MCAL_VERSION": [
+                "PC_MCAL_0.1.0"
+            ]
+        }
+    },
+    "validate": {
+        "ignore_option": {
+            "AURIX2G_TC397": {
+                "Os": {
+                    "interrupt_priority_rule": 1,
+                    "max_interrupt_priority": 255,
+                    "max_cat0_interrupt_priority": 255,
+                    "max_tp_interrupt_priority": 254,
+                    "max_cat1_interrupt_priority": 253,
+                    "max_cat2_interrupt_priority": 240,
+                    "min_interrupt_priority": 1,
+                    "min_OsTaskStackSize": 128
+                }
+            },
+            "FC7300F8MDT": {
+                "Os": {
+                    "interrupt_priority_rule": 0,
+                    "max_interrupt_priority": 0,
+                    "max_cat0_interrupt_priority": 0,
+                    "max_tp_interrupt_priority": 1,
+                    "max_cat1_interrupt_priority": 0,
+                    "max_cat2_interrupt_priority": 1,
+                    "min_interrupt_priority": 7,
+                    "min_OsTaskStackSize": 1024
+                }
+            },
+            "E3650": {
+                "Os": {
+                    "interrupt_priority_rule": 0,
+                    "max_interrupt_priority": 0,
+                    "max_cat0_interrupt_priority": 0,
+                    "max_tp_interrupt_priority": 1,
+                    "max_cat1_interrupt_priority": 2,
+                    "max_cat2_interrupt_priority": 9,
+                    "min_interrupt_priority": 30,
+                    "min_OsTaskStackSize": 1024
+                }
+            },
+            "J6E": {
+                "Os": {
+                    "interrupt_priority_rule": 0,
+                    "max_interrupt_priority": 0,
+                    "max_cat0_interrupt_priority": 0,
+                    "max_tp_interrupt_priority": 1,
+                    "max_cat1_interrupt_priority": 2,
+                    "max_cat2_interrupt_priority": 9,
+                    "min_interrupt_priority": 30,
+                    "min_OsTaskStackSize": 1024
+                }
+            },
+            "Sim_Common": {
+                "Os": {
+                    "interrupt_priority_rule": 1,
+                    "max_interrupt_priority": 255,
+                    "max_cat0_interrupt_priority": 255,
+                    "max_tp_interrupt_priority": 254,
+                    "max_cat1_interrupt_priority": 253,
+                    "max_cat2_interrupt_priority": 240,
+                    "min_interrupt_priority": 1,
+                    "min_OsTaskStackSize": 128
+                }
+            }
+        }
+    },
+    "dbc_family": {
+        "CanNm": {
+            "NmAsrMessage": 1
+        },
+        "Nm": {
+            "NmAsrMessage": 1
+        },
+        "Com": {
+            "GenMsgILSupport": 1
+        },
+        "PduR": {
+            "GenMsgILSupport": 1
+        },
+        "CanIf": {
+            "GenMsgILSupport": 1
+        },
+        "EcuC": {
+            "GenMsgILSupport": 1
+        },
+        "ComM": {
+            "GenMsgILSupport": 1
+        },
+        "CanSM": {
+            "GenMsgILSupport": 1
+        },
+        "CanTp": null
+    },
+    "ldf_family": {
+        "EcuC": {},
+        "Com": {},
+        "PduR": {},
+        "LinIf": {},
+        "LinSM": {},
+        "ComM": {},
+        "Nm": {}
+    },
+    "cdd_family": {
+        "Dcm": {},
+        "Dem": {},
+        "NvM": {}
+    },
+    "level": {
+        "level0": [
+            "Os"
+        ],
+        "level1": [],
+        "level2": [],
+        "level3": []
+    },
+    "module_cfg": {
+        "Os": {
+            "group": [
+                "Timing"
+            ],
+            "dependency_list": [
+                "EcuC"
+            ],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../rt_framework"
+        },
+        "MemPool": {
+            "group": [
+                "Memory"
+            ],
+            "dependency_list": [
+                "Os"
+            ],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../memory/mempool"
+        },
+        "Rte": {
+            "group": [
+                "Timing"
+            ],
+            "dependency_list": [
+                "Os",
+                "EcuC"
+            ],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../runtime/Rte"
+        },
+        "EcuC": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": false,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../runtime/EcuC"
+        },
+        "EthIf": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/net_dev/eth"
+        },
+        "TcpIp": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [
+                "EthIf"
+            ],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/net_protocols/sockets"
+        },
+        "Memmap": {
+            "group": [
+                "Memory"
+            ],
+            "dependency_list": [
+                "Os",
+                "EcuC"
+            ],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../memory/memmap"
+        },
+        "Det": {
+            "group": [
+                "Base Serivces"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": false,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": false
+            },
+            "plug_in_path": "../../maintaining/det"
+        },
+        "MemIf": {
+            "group": [
+                "Memory"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": false,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../memory/memif"
+        },
+        "NvM": {
+            "group": [
+                "Memory"
+            ],
+            "dependency_list": [
+                "MemIf"
+            ],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../memory/nvm"
+        },
+        "Dem": {
+            "group": [
+                "Diagnostics"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../diagnostics/service/dem"
+        },
+        "Dcm": {
+            "group": [
+                "Diagnostics"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../diagnostics/service/dcm"
+        },
+        "CanTp": {
+            "group": [
+                "Diagnostics"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../diagnostics/transport/cantp"
+        },
+        "Com": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/rt_com"
+        },
+        "PduR": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/pdu_router"
+        },
+        "CanIf": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": false
+            },
+            "plug_in_path": "../../communication/net_dev/canif"
+        },
+        "ComM": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/net_manager/comm"
+        },
+        "CanSM": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/net_manager/cansm"
+        },
+        "CanNm": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/net_manager/cannm"
+        },
+        "Nm": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../communication/net_manager/nm"
+        },
+        "EcuM": {
+            "group": [
+                "Mode Management"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../system_services/service_management/sysm_init"
+        },
+        "BswM": {
+            "group": [
+                "Mode Management"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": true,
+                "dynamic": true
+            },
+            "plug_in_path": "../../system_services/service_management/sysm_core"
+        },
+        "Isolate": {
+            "group": [
+                "Safety"
+            ],
+            "dependency_list": [
+                "Os",
+                "EcuC"
+            ],
+            "support_ui": true,
+            "support_validation": true,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../fusa/isolate"
+        },
+        "Cdd": {
+            "group": [
+                "Communication"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": false,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../communication/cdd"
+        },
+        "Crc": {
+            "group": [
+                "Mode Management"
+            ],
+            "dependency_list": [],
+            "support_ui": true,
+            "support_validation": false,
+            "support_generation": true,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../security/crc"
+        },
+        "Sim": {
+            "group": [
+                "Simulator"
+            ],
+            "dependency_list": [],
+            "support_ui": false,
+            "support_validation": false,
+            "support_generation": false,
+            "internal_behavior": {
+                "support": false,
+                "dynamic": false
+            },
+            "plug_in_path": "../../../drivers/sim"
+        }
+    },
+    "no_repeat_ref": {
+        "EcuC": [
+            {
+                "base_path": "/AUTOSAR/EcucDefs/EcuC/EcucPartitionCollection",
+                "param_path": [
+                    "/AUTOSAR/EcucDefs/EcuC/EcucPartitionCollection/EcucPartition/EcucPartitionSoftwareComponentInstanceRef"
+                ]
+            }
+        ]
+    }
+}
