@@ -17,6 +17,7 @@ from func_module.validation.common.basic_rule import BasicRule, timing_decorator
 from durable.lang import *
 from durable.engine import *
 from .Os_ruleutils import OsRuleutils
+from components.rt_framework.config_plug_in.os_platform_cfg import OsPlatformCfgError, resolve_os_int_level_cfg
 
 class Os013008Rule(BasicRule):
     """中断类型和中断优先级不匹配则进行告警提示"""
@@ -27,11 +28,14 @@ class Os013008Rule(BasicRule):
         super().__init__()
         self.logs = logs
         self.ecuc_os_dict = validation_data.bsw_ecuc_dict['Os']['ArPackages']['ActiveEcuC']['Os']
-        self.validation_cfg = (
-            validation_data.sys_info_class.system_target_info.get("validate", {})
-            .get("ignore_option", {})
-            .get("Os", {})
-        )
+        sys_info = validation_data.sys_info_class
+        try:
+            self.validation_cfg = resolve_os_int_level_cfg(
+                sys_info.system_target_info, sys_info.target, getattr(sys_info, "system_path", "")
+            )
+        except OsPlatformCfgError:
+            # Reported by Os018001; ISR priorities cannot be judged without the limits.
+            self.validation_cfg = None
         self.validation_code = self.__class__.ruleset_name
         self.validation_summary = "OsIsrCategory and OsIsrInterruptPriority not match."
         self.durable_init()
@@ -44,6 +48,8 @@ class Os013008Rule(BasicRule):
 
     @timing_decorator
     def validation_run(self):
+        if self.validation_cfg is None:
+            return
         for os_key, os_instance in self.ecuc_os_dict.items():
             if not isinstance(os_instance, dict):
                 continue
