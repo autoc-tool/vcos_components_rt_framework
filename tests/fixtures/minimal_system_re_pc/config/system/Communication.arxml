@@ -1,0 +1,631 @@
+<?xml version="1.0" ?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>Diagnostics</SHORT-NAME>
+      <ELEMENTS/>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>NM</SHORT-NAME>
+      <ELEMENTS/>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>TP</SHORT-NAME>
+      <ELEMENTS/>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>ECU</SHORT-NAME>
+      <ELEMENTS>
+        <ECU-INSTANCE UUID="AB8F4189-3359-4E29-9716-83996760A581">
+          <SHORT-NAME>DUT</SHORT-NAME>
+          <ASSOCIATED-COM-I-PDU-GROUP-REFS>
+            <ASSOCIATED-COM-I-PDU-GROUP-REF DEST="I-SIGNAL-I-PDU-GROUP">/IPDUGroup/DUT_ominimal_system_Rx</ASSOCIATED-COM-I-PDU-GROUP-REF>
+            <ASSOCIATED-COM-I-PDU-GROUP-REF DEST="I-SIGNAL-I-PDU-GROUP">/IPDUGroup/DUT_ominimal_system_Tx</ASSOCIATED-COM-I-PDU-GROUP-REF>
+          </ASSOCIATED-COM-I-PDU-GROUP-REFS>
+          <COMM-CONTROLLERS>
+            <CAN-COMMUNICATION-CONTROLLER UUID="E6F953DE-68CC-4666-9914-8547947740E7">
+              <SHORT-NAME>CT_minimal_system</SHORT-NAME>
+              <CAN-COMMUNICATION-CONTROLLER-VARIANTS>
+                <CAN-COMMUNICATION-CONTROLLER-CONDITIONAL/>
+              </CAN-COMMUNICATION-CONTROLLER-VARIANTS>
+            </CAN-COMMUNICATION-CONTROLLER>
+          </COMM-CONTROLLERS>
+          <CONNECTORS>
+            <CAN-COMMUNICATION-CONNECTOR UUID="7FB2E3DF-6538-4570-96C6-90FF3A43D03C">
+              <SHORT-NAME>CN_minimal_system</SHORT-NAME>
+              <COMM-CONTROLLER-REF DEST="CAN-COMMUNICATION-CONTROLLER">/ECU/DUT/CT_minimal_system</COMM-CONTROLLER-REF>
+              <ECU-COMM-PORT-INSTANCES>
+                <FRAME-PORT UUID="B323550B-01DB-47EC-9644-56A5ED04D49E">
+                  <SHORT-NAME>FP_ECU_Status_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </FRAME-PORT>
+                <FRAME-PORT UUID="7DCECBBF-78B9-44B8-8620-D98CD7318D21">
+                  <SHORT-NAME>FP_Cmd_Control_Rx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                </FRAME-PORT>
+                <FRAME-PORT UUID="C06EB398-8095-4027-BFD9-9E17A35539F6">
+                  <SHORT-NAME>FP_Fault_Event_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </FRAME-PORT>
+                <I-PDU-PORT UUID="E8398EC1-72C6-4C4A-B89E-1FF2AE6E6793">
+                  <SHORT-NAME>PP_ECU_Status_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-PDU-PORT>
+                <I-PDU-PORT UUID="EB88C2D0-1540-4E00-B2EE-81322ADC6E46">
+                  <SHORT-NAME>PP_Cmd_Control_Rx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                </I-PDU-PORT>
+                <I-PDU-PORT UUID="BCAE84F6-87FF-4234-BB18-850FA64598E4">
+                  <SHORT-NAME>PP_Fault_Event_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-PDU-PORT>
+                <I-SIGNAL-PORT UUID="331DA897-EAEB-44FD-BC02-C8318F582301">
+                  <SHORT-NAME>SP_ECU_State_o_ECU_Status_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="11F1EE92-2284-49FE-865F-F18BC1DA1A57">
+                  <SHORT-NAME>SP_ECU_AliveCnt_o_ECU_Status_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="748EB8BA-8EC8-43C3-B220-0B87C3A4CF2B">
+                  <SHORT-NAME>SP_Temperature_o_ECU_Status_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="A8BEBBD3-8013-4376-A425-258C31D5D228">
+                  <SHORT-NAME>SP_SupplyVoltage_o_ECU_Status_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="9BE299EA-D3E8-4CA4-A997-48A49A3F8B9C">
+                  <SHORT-NAME>SP_FaultFlags_o_ECU_Status_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="2906D6FC-8E43-4DC2-8E03-0AA76D7F100F">
+                  <SHORT-NAME>SP_LedCmd_o_Cmd_Control_Rx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="7B31CC2B-F9AA-4781-8F83-991725EFFAB5">
+                  <SHORT-NAME>SP_TargetMode_o_Cmd_Control_Rx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="3A91A99A-0943-40A3-BE19-650EA2696A77">
+                  <SHORT-NAME>SP_Cmd_AliveCnt_o_Cmd_Control_Rx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="021C6446-07B1-4CB7-928F-9F747363D010">
+                  <SHORT-NAME>SP_PwmDuty_o_Cmd_Control_Rx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="D4E2D027-D8FE-4EE3-BEFA-1AE0D390BE2B">
+                  <SHORT-NAME>SP_Cmd_Crc8_o_Cmd_Control_Rx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="A8585E21-DE63-4DEF-B3E8-4193CAA88EAF">
+                  <SHORT-NAME>SP_FaultCode_o_Fault_Event_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+                <I-SIGNAL-PORT UUID="2F7E0465-90E1-4EE7-92A4-2BC455EFC6D6">
+                  <SHORT-NAME>SP_FaultActive_o_Fault_Event_Tx</SHORT-NAME>
+                  <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                </I-SIGNAL-PORT>
+              </ECU-COMM-PORT-INSTANCES>
+            </CAN-COMMUNICATION-CONNECTOR>
+          </CONNECTORS>
+        </ECU-INSTANCE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>Cluster</SHORT-NAME>
+      <ELEMENTS>
+        <CAN-CLUSTER UUID="0E88744C-E437-45D2-93E2-A29557738693">
+          <SHORT-NAME>minimal_system</SHORT-NAME>
+          <CAN-CLUSTER-VARIANTS>
+            <CAN-CLUSTER-CONDITIONAL>
+              <PHYSICAL-CHANNELS>
+                <CAN-PHYSICAL-CHANNEL UUID="C1A9765B-E79F-40FE-8BBE-01675733B1DC">
+                  <SHORT-NAME>CHNL</SHORT-NAME>
+                  <COMM-CONNECTORS>
+                    <COMMUNICATION-CONNECTOR-REF-CONDITIONAL>
+                      <COMMUNICATION-CONNECTOR-REF DEST="CAN-COMMUNICATION-CONNECTOR">/ECU/DUT/CN_minimal_system</COMMUNICATION-CONNECTOR-REF>
+                    </COMMUNICATION-CONNECTOR-REF-CONDITIONAL>
+                  </COMM-CONNECTORS>
+                  <FRAME-TRIGGERINGS>
+                    <CAN-FRAME-TRIGGERING UUID="B05609EA-87B6-408A-8D2C-B6481488A23A">
+                      <SHORT-NAME>FT_ECU_Status</SHORT-NAME>
+                      <FRAME-PORT-REFS>
+                        <FRAME-PORT-REF DEST="FRAME-PORT">/ECU/DUT/CN_minimal_system/FP_ECU_Status_Tx</FRAME-PORT-REF>
+                      </FRAME-PORT-REFS>
+                      <FRAME-REF DEST="CAN-FRAME">/CanFrame/ECU_Status</FRAME-REF>
+                      <PDU-TRIGGERINGS>
+                        <PDU-TRIGGERING-REF-CONDITIONAL>
+                          <PDU-TRIGGERING-REF DEST="PDU-TRIGGERING">/Cluster/minimal_system/CHNL/PT_ECU_Status</PDU-TRIGGERING-REF>
+                        </PDU-TRIGGERING-REF-CONDITIONAL>
+                      </PDU-TRIGGERINGS>
+                      <CAN-ADDRESSING-MODE>STANDARD</CAN-ADDRESSING-MODE>
+                      <IDENTIFIER>256</IDENTIFIER>
+                    </CAN-FRAME-TRIGGERING>
+                    <CAN-FRAME-TRIGGERING UUID="6B24DF9F-6B6E-4790-9091-9742C6BBFE99">
+                      <SHORT-NAME>FT_Cmd_Control</SHORT-NAME>
+                      <FRAME-PORT-REFS>
+                        <FRAME-PORT-REF DEST="FRAME-PORT">/ECU/DUT/CN_minimal_system/FP_Cmd_Control_Rx</FRAME-PORT-REF>
+                      </FRAME-PORT-REFS>
+                      <FRAME-REF DEST="CAN-FRAME">/CanFrame/Cmd_Control</FRAME-REF>
+                      <PDU-TRIGGERINGS>
+                        <PDU-TRIGGERING-REF-CONDITIONAL>
+                          <PDU-TRIGGERING-REF DEST="PDU-TRIGGERING">/Cluster/minimal_system/CHNL/PT_Cmd_Control</PDU-TRIGGERING-REF>
+                        </PDU-TRIGGERING-REF-CONDITIONAL>
+                      </PDU-TRIGGERINGS>
+                      <CAN-ADDRESSING-MODE>STANDARD</CAN-ADDRESSING-MODE>
+                      <IDENTIFIER>512</IDENTIFIER>
+                    </CAN-FRAME-TRIGGERING>
+                    <CAN-FRAME-TRIGGERING UUID="90E21F24-6D9B-4F99-B2B6-14EADF0A8AF3">
+                      <SHORT-NAME>FT_Fault_Event</SHORT-NAME>
+                      <FRAME-PORT-REFS>
+                        <FRAME-PORT-REF DEST="FRAME-PORT">/ECU/DUT/CN_minimal_system/FP_Fault_Event_Tx</FRAME-PORT-REF>
+                      </FRAME-PORT-REFS>
+                      <FRAME-REF DEST="CAN-FRAME">/CanFrame/Fault_Event</FRAME-REF>
+                      <PDU-TRIGGERINGS>
+                        <PDU-TRIGGERING-REF-CONDITIONAL>
+                          <PDU-TRIGGERING-REF DEST="PDU-TRIGGERING">/Cluster/minimal_system/CHNL/PT_Fault_Event</PDU-TRIGGERING-REF>
+                        </PDU-TRIGGERING-REF-CONDITIONAL>
+                      </PDU-TRIGGERINGS>
+                      <CAN-ADDRESSING-MODE>STANDARD</CAN-ADDRESSING-MODE>
+                      <IDENTIFIER>768</IDENTIFIER>
+                    </CAN-FRAME-TRIGGERING>
+                  </FRAME-TRIGGERINGS>
+                  <I-SIGNAL-TRIGGERINGS>
+                    <I-SIGNAL-TRIGGERING UUID="29A50F42-BAC6-44B3-BFC8-97153EE16AFD">
+                      <SHORT-NAME>ST_ECU_State_o_ECU_Status</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_ECU_State_o_ECU_Status_Tx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/ECU_State_o_ECU_Status</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="43CC2B1A-8E00-438C-8F44-F58B93A77E05">
+                      <SHORT-NAME>ST_ECU_AliveCnt_o_ECU_Status</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_ECU_AliveCnt_o_ECU_Status_Tx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/ECU_AliveCnt_o_ECU_Status</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="3284038D-C70D-4C08-9BEE-E5E8BE909022">
+                      <SHORT-NAME>ST_Temperature_o_ECU_Status</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_Temperature_o_ECU_Status_Tx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/Temperature_o_ECU_Status</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="AB8B211F-06D4-4EBB-9159-49B345ED7FAB">
+                      <SHORT-NAME>ST_SupplyVoltage_o_ECU_Status</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_SupplyVoltage_o_ECU_Status_Tx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/SupplyVoltage_o_ECU_Status</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="4AF88800-8BE2-4291-8D1A-6E2EE83BDDFC">
+                      <SHORT-NAME>ST_FaultFlags_o_ECU_Status</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_FaultFlags_o_ECU_Status_Tx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/FaultFlags_o_ECU_Status</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="92A25800-A51B-4323-8DBF-3924E6BC8805">
+                      <SHORT-NAME>ST_LedCmd_o_Cmd_Control</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_LedCmd_o_Cmd_Control_Rx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/LedCmd_o_Cmd_Control</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="3C66B13A-82EE-4E3E-AC4A-77C0BE90549C">
+                      <SHORT-NAME>ST_TargetMode_o_Cmd_Control</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_TargetMode_o_Cmd_Control_Rx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/TargetMode_o_Cmd_Control</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="809961A4-FF2F-4985-8B13-A95123DDD845">
+                      <SHORT-NAME>ST_Cmd_AliveCnt_o_Cmd_Control</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_Cmd_AliveCnt_o_Cmd_Control_Rx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/Cmd_AliveCnt_o_Cmd_Control</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="ADCA067D-54E9-4F04-8CDC-EB61CAE7D223">
+                      <SHORT-NAME>ST_PwmDuty_o_Cmd_Control</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_PwmDuty_o_Cmd_Control_Rx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/PwmDuty_o_Cmd_Control</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="E1E21623-159E-47F5-BEA7-840E00A1895D">
+                      <SHORT-NAME>ST_Cmd_Crc8_o_Cmd_Control</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_Cmd_Crc8_o_Cmd_Control_Rx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/Cmd_Crc8_o_Cmd_Control</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="07D68191-BD21-4C62-A404-8721CF20D076">
+                      <SHORT-NAME>ST_FaultCode_o_Fault_Event</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_FaultCode_o_Fault_Event_Tx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/FaultCode_o_Fault_Event</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                    <I-SIGNAL-TRIGGERING UUID="3659954E-9B54-4315-AEED-17B544CA5EB5">
+                      <SHORT-NAME>ST_FaultActive_o_Fault_Event</SHORT-NAME>
+                      <I-SIGNAL-PORT-REFS>
+                        <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/ECU/DUT/CN_minimal_system/SP_FaultActive_o_Fault_Event_Tx</I-SIGNAL-PORT-REF>
+                      </I-SIGNAL-PORT-REFS>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/FaultActive_o_Fault_Event</I-SIGNAL-REF>
+                    </I-SIGNAL-TRIGGERING>
+                  </I-SIGNAL-TRIGGERINGS>
+                  <PDU-TRIGGERINGS>
+                    <PDU-TRIGGERING UUID="C603CF55-F684-400C-87E7-655077B48D06">
+                      <SHORT-NAME>PT_ECU_Status</SHORT-NAME>
+                      <I-PDU-PORT-REFS>
+                        <I-PDU-PORT-REF DEST="I-PDU-PORT">/ECU/DUT/CN_minimal_system/PP_ECU_Status_Tx</I-PDU-PORT-REF>
+                      </I-PDU-PORT-REFS>
+                      <I-PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/ECU_Status</I-PDU-REF>
+                      <I-SIGNAL-TRIGGERINGS>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_ECU_State_o_ECU_Status</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_ECU_AliveCnt_o_ECU_Status</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_Temperature_o_ECU_Status</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_SupplyVoltage_o_ECU_Status</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_FaultFlags_o_ECU_Status</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                      </I-SIGNAL-TRIGGERINGS>
+                    </PDU-TRIGGERING>
+                    <PDU-TRIGGERING UUID="2D0F7E24-9C2C-465F-884F-59047DC3F8C0">
+                      <SHORT-NAME>PT_Cmd_Control</SHORT-NAME>
+                      <I-PDU-PORT-REFS>
+                        <I-PDU-PORT-REF DEST="I-PDU-PORT">/ECU/DUT/CN_minimal_system/PP_Cmd_Control_Rx</I-PDU-PORT-REF>
+                      </I-PDU-PORT-REFS>
+                      <I-PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/Cmd_Control</I-PDU-REF>
+                      <I-SIGNAL-TRIGGERINGS>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_LedCmd_o_Cmd_Control</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_TargetMode_o_Cmd_Control</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_Cmd_AliveCnt_o_Cmd_Control</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_PwmDuty_o_Cmd_Control</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_Cmd_Crc8_o_Cmd_Control</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                      </I-SIGNAL-TRIGGERINGS>
+                    </PDU-TRIGGERING>
+                    <PDU-TRIGGERING UUID="E69F35CB-A738-46AA-A0AB-A792A030C428">
+                      <SHORT-NAME>PT_Fault_Event</SHORT-NAME>
+                      <I-PDU-PORT-REFS>
+                        <I-PDU-PORT-REF DEST="I-PDU-PORT">/ECU/DUT/CN_minimal_system/PP_Fault_Event_Tx</I-PDU-PORT-REF>
+                      </I-PDU-PORT-REFS>
+                      <I-PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/Fault_Event</I-PDU-REF>
+                      <I-SIGNAL-TRIGGERINGS>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_FaultCode_o_Fault_Event</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                        <I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                          <I-SIGNAL-TRIGGERING-REF DEST="I-SIGNAL-TRIGGERING">/Cluster/minimal_system/CHNL/ST_FaultActive_o_Fault_Event</I-SIGNAL-TRIGGERING-REF>
+                        </I-SIGNAL-TRIGGERING-REF-CONDITIONAL>
+                      </I-SIGNAL-TRIGGERINGS>
+                    </PDU-TRIGGERING>
+                  </PDU-TRIGGERINGS>
+                </CAN-PHYSICAL-CHANNEL>
+              </PHYSICAL-CHANNELS>
+              <PROTOCOL-NAME>CAN</PROTOCOL-NAME>
+            </CAN-CLUSTER-CONDITIONAL>
+          </CAN-CLUSTER-VARIANTS>
+        </CAN-CLUSTER>
+      </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>IPDUGroup</SHORT-NAME>
+      <ELEMENTS>
+        <I-SIGNAL-I-PDU-GROUP UUID="A5795B04-1073-497B-AED4-6C3189E45EC3">
+          <SHORT-NAME>DUT_ominimal_system_Rx</SHORT-NAME>
+          <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+          <I-SIGNAL-I-PDUS>
+            <I-SIGNAL-I-PDU-REF-CONDITIONAL>
+              <I-SIGNAL-I-PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/Cmd_Control</I-SIGNAL-I-PDU-REF>
+            </I-SIGNAL-I-PDU-REF-CONDITIONAL>
+          </I-SIGNAL-I-PDUS>
+        </I-SIGNAL-I-PDU-GROUP>
+        <I-SIGNAL-I-PDU-GROUP UUID="DEF60056-5652-4AE8-8AAF-67CE64BD1D85">
+          <SHORT-NAME>DUT_ominimal_system_Tx</SHORT-NAME>
+          <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+          <I-SIGNAL-I-PDUS>
+            <I-SIGNAL-I-PDU-REF-CONDITIONAL>
+              <I-SIGNAL-I-PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/ECU_Status</I-SIGNAL-I-PDU-REF>
+            </I-SIGNAL-I-PDU-REF-CONDITIONAL>
+            <I-SIGNAL-I-PDU-REF-CONDITIONAL>
+              <I-SIGNAL-I-PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/Fault_Event</I-SIGNAL-I-PDU-REF>
+            </I-SIGNAL-I-PDU-REF-CONDITIONAL>
+          </I-SIGNAL-I-PDUS>
+        </I-SIGNAL-I-PDU-GROUP>
+      </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>CanFrame</SHORT-NAME>
+      <ELEMENTS>
+        <CAN-FRAME UUID="6D625CAB-ED35-4541-A8F0-22F336DE7AAD">
+          <SHORT-NAME>ECU_Status</SHORT-NAME>
+          <FRAME-LENGTH>8</FRAME-LENGTH>
+          <PDU-TO-FRAME-MAPPINGS>
+            <PDU-TO-FRAME-MAPPING UUID="595E7D13-C93B-4D3E-87F2-33E22B1C9E7E">
+              <SHORT-NAME>ECU_Status</SHORT-NAME>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/ECU_Status</PDU-REF>
+              <START-POSITION>0</START-POSITION>
+            </PDU-TO-FRAME-MAPPING>
+          </PDU-TO-FRAME-MAPPINGS>
+        </CAN-FRAME>
+        <CAN-FRAME UUID="FD552701-CF2F-4AAD-92C5-239AA29D1655">
+          <SHORT-NAME>Cmd_Control</SHORT-NAME>
+          <FRAME-LENGTH>8</FRAME-LENGTH>
+          <PDU-TO-FRAME-MAPPINGS>
+            <PDU-TO-FRAME-MAPPING UUID="C65FE2E0-7A95-44A3-8459-DCC24011A7A6">
+              <SHORT-NAME>Cmd_Control</SHORT-NAME>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/Cmd_Control</PDU-REF>
+              <START-POSITION>0</START-POSITION>
+            </PDU-TO-FRAME-MAPPING>
+          </PDU-TO-FRAME-MAPPINGS>
+        </CAN-FRAME>
+        <CAN-FRAME UUID="CADF40C0-FB27-40D9-A2AE-F883F98463E3">
+          <SHORT-NAME>Fault_Event</SHORT-NAME>
+          <FRAME-LENGTH>2</FRAME-LENGTH>
+          <PDU-TO-FRAME-MAPPINGS>
+            <PDU-TO-FRAME-MAPPING UUID="2C45CF98-5117-4942-A9A9-1185029ECEBA">
+              <SHORT-NAME>Fault_Event</SHORT-NAME>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <PDU-REF DEST="I-SIGNAL-I-PDU">/PDU/Fault_Event</PDU-REF>
+              <START-POSITION>0</START-POSITION>
+            </PDU-TO-FRAME-MAPPING>
+          </PDU-TO-FRAME-MAPPINGS>
+        </CAN-FRAME>
+      </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>LinFrame</SHORT-NAME>
+      <ELEMENTS/>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>PDU</SHORT-NAME>
+      <ELEMENTS>
+        <I-SIGNAL-I-PDU UUID="5B003335-4227-46A3-9B5E-98581949CF2E">
+          <SHORT-NAME>ECU_Status</SHORT-NAME>
+          <LENGTH>8</LENGTH>
+          <I-PDU-TIMING-SPECIFICATIONS>
+            <I-PDU-TIMING/>
+          </I-PDU-TIMING-SPECIFICATIONS>
+          <I-SIGNAL-TO-PDU-MAPPINGS>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="8C15E187-30A8-4AFB-A9BB-B1F166C46E46">
+              <SHORT-NAME>ECU_State</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/ECU_State_o_ECU_Status</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>0</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="3D1AF25E-15DC-4087-BAC1-3C27C363A7C1">
+              <SHORT-NAME>ECU_AliveCnt</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/ECU_AliveCnt_o_ECU_Status</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>4</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="A80EAFBA-A66E-4F75-8D63-9D0F5C88DD24">
+              <SHORT-NAME>Temperature</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/Temperature_o_ECU_Status</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>8</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="0993F0F9-5155-4546-9275-23AB2DC36591">
+              <SHORT-NAME>SupplyVoltage</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/SupplyVoltage_o_ECU_Status</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>16</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="93979E72-F067-4197-AE60-C0BF7E221350">
+              <SHORT-NAME>FaultFlags</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/FaultFlags_o_ECU_Status</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>32</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+          </I-SIGNAL-TO-PDU-MAPPINGS>
+          <UNUSED-BIT-PATTERN>0</UNUSED-BIT-PATTERN>
+        </I-SIGNAL-I-PDU>
+        <I-SIGNAL-I-PDU UUID="5C9C6D18-891F-4A72-BD82-3D4BB8B3AA36">
+          <SHORT-NAME>Cmd_Control</SHORT-NAME>
+          <LENGTH>8</LENGTH>
+          <I-PDU-TIMING-SPECIFICATIONS>
+            <I-PDU-TIMING/>
+          </I-PDU-TIMING-SPECIFICATIONS>
+          <I-SIGNAL-TO-PDU-MAPPINGS>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="A29296D8-3EDA-4C9C-A4E0-9C4297D6EC41">
+              <SHORT-NAME>LedCmd</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/LedCmd_o_Cmd_Control</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>0</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="24D01023-3EC1-4055-BEBF-78A4CD311277">
+              <SHORT-NAME>TargetMode</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/TargetMode_o_Cmd_Control</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>1</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="2FBF9F8D-F551-4140-B105-9F884601C453">
+              <SHORT-NAME>Cmd_AliveCnt</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/Cmd_AliveCnt_o_Cmd_Control</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>4</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="8204DAF2-2664-44EB-986F-8F6F8824208C">
+              <SHORT-NAME>PwmDuty</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/PwmDuty_o_Cmd_Control</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>8</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="7D13CE86-8C7A-4F9C-81D4-975170522833">
+              <SHORT-NAME>Cmd_Crc8</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/Cmd_Crc8_o_Cmd_Control</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>56</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+          </I-SIGNAL-TO-PDU-MAPPINGS>
+          <UNUSED-BIT-PATTERN>0</UNUSED-BIT-PATTERN>
+        </I-SIGNAL-I-PDU>
+        <I-SIGNAL-I-PDU UUID="65A7B341-C1A9-488A-8DCF-56AF67C46EDB">
+          <SHORT-NAME>Fault_Event</SHORT-NAME>
+          <LENGTH>2</LENGTH>
+          <I-PDU-TIMING-SPECIFICATIONS>
+            <I-PDU-TIMING/>
+          </I-PDU-TIMING-SPECIFICATIONS>
+          <I-SIGNAL-TO-PDU-MAPPINGS>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="7323DF30-2C30-4260-BB5F-69DD07CBEAC4">
+              <SHORT-NAME>FaultCode</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/FaultCode_o_Fault_Event</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>0</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+            <I-SIGNAL-TO-I-PDU-MAPPING UUID="B4DBF5A1-24E5-4FC9-AAB3-84A6976F95DC">
+              <SHORT-NAME>FaultActive</SHORT-NAME>
+              <I-SIGNAL-REF DEST="I-SIGNAL">/ISignal/FaultActive_o_Fault_Event</I-SIGNAL-REF>
+              <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+              <START-POSITION>8</START-POSITION>
+              <TRANSFER-PROPERTY>PENDING</TRANSFER-PROPERTY>
+            </I-SIGNAL-TO-I-PDU-MAPPING>
+          </I-SIGNAL-TO-PDU-MAPPINGS>
+          <UNUSED-BIT-PATTERN>0</UNUSED-BIT-PATTERN>
+        </I-SIGNAL-I-PDU>
+      </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>ISignal</SHORT-NAME>
+      <ELEMENTS>
+        <I-SIGNAL UUID="C87F4957-011A-4F13-AD4E-241AE6D5151A">
+          <SHORT-NAME>ECU_State_o_ECU_Status</SHORT-NAME>
+          <LENGTH>4</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/ECU_State</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="8A8D88D0-4814-44C6-9E69-EBD3651FEB9B">
+          <SHORT-NAME>ECU_AliveCnt_o_ECU_Status</SHORT-NAME>
+          <LENGTH>4</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/ECU_AliveCnt</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="011B0379-B040-427A-9870-1DA4F6A45501">
+          <SHORT-NAME>Temperature_o_ECU_Status</SHORT-NAME>
+          <LENGTH>8</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/Temperature</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="EB6A51E1-CC11-426E-B348-A31640F1F78C">
+          <SHORT-NAME>SupplyVoltage_o_ECU_Status</SHORT-NAME>
+          <LENGTH>16</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/SupplyVoltage</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="0521F32E-591A-417F-AFFD-59930F7E247E">
+          <SHORT-NAME>FaultFlags_o_ECU_Status</SHORT-NAME>
+          <LENGTH>8</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/FaultFlags</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="0F968A23-FD8A-4CCE-8EFE-575C4610ED85">
+          <SHORT-NAME>LedCmd_o_Cmd_Control</SHORT-NAME>
+          <LENGTH>1</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/LedCmd</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="3EB201D4-6395-490A-A87E-0C4FED314E23">
+          <SHORT-NAME>TargetMode_o_Cmd_Control</SHORT-NAME>
+          <LENGTH>3</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/TargetMode</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="68BEC2DC-93E2-4843-8F3B-F5B156BF8F6A">
+          <SHORT-NAME>Cmd_AliveCnt_o_Cmd_Control</SHORT-NAME>
+          <LENGTH>4</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/Cmd_AliveCnt</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="377F6F56-CF22-46C3-BCCE-1C3C77FE9F7F">
+          <SHORT-NAME>PwmDuty_o_Cmd_Control</SHORT-NAME>
+          <LENGTH>8</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/PwmDuty</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="48D9E4F1-6079-49F3-AB51-FA29CD623487">
+          <SHORT-NAME>Cmd_Crc8_o_Cmd_Control</SHORT-NAME>
+          <LENGTH>8</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/Cmd_Crc8</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="C75FAAFF-4132-4BAC-AAC6-B5F6D5940881">
+          <SHORT-NAME>FaultCode_o_Fault_Event</SHORT-NAME>
+          <LENGTH>8</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/FaultCode</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+        <I-SIGNAL UUID="FEE80B5B-9F3F-45BF-80A7-6150ECFFC3A5">
+          <SHORT-NAME>FaultActive_o_Fault_Event</SHORT-NAME>
+          <LENGTH>1</LENGTH>
+          <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/FaultActive</SYSTEM-SIGNAL-REF>
+        </I-SIGNAL>
+      </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>Signal</SHORT-NAME>
+      <ELEMENTS>
+        <SYSTEM-SIGNAL UUID="19208AA8-C638-46C1-BA7B-C77A9E95BBFA">
+          <SHORT-NAME>ECU_State</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="252A6A6B-74A1-4739-8F9F-8E2D0828926D">
+          <SHORT-NAME>ECU_AliveCnt</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="5AC773B7-04F3-4E87-B2B1-B7BC6C9FA011">
+          <SHORT-NAME>Temperature</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="C11C7E34-2F2F-4412-B151-FED1DFE3EB5D">
+          <SHORT-NAME>SupplyVoltage</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="E7CBF0B2-9DA2-48C5-A9DE-CB751E97729F">
+          <SHORT-NAME>FaultFlags</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="426067C4-CF76-40B2-8EE0-7594EB148F34">
+          <SHORT-NAME>LedCmd</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="991ADDA8-E4C9-44CC-A7AB-D857605EA720">
+          <SHORT-NAME>TargetMode</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="A14B68F5-26DE-4035-BCA3-AF952A827663">
+          <SHORT-NAME>Cmd_AliveCnt</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="5F0C5512-1684-4B61-819B-AA91F4759283">
+          <SHORT-NAME>PwmDuty</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="986C0A90-EB4D-4F9B-88E4-5989700EEB96">
+          <SHORT-NAME>Cmd_Crc8</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="1E92B7ED-389A-4CC5-9770-408AD2259150">
+          <SHORT-NAME>FaultCode</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+        <SYSTEM-SIGNAL UUID="9F20E1E7-1AD9-4C4B-B4A6-2DB31C331D82">
+          <SHORT-NAME>FaultActive</SHORT-NAME>
+        </SYSTEM-SIGNAL>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

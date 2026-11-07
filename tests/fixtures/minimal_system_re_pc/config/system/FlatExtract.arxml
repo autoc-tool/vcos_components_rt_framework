@@ -1,0 +1,236 @@
+<?xml version="1.0" ?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="61fa9f2b-70c3-4fad-83ae-fc06e9e54ca4">
+      <SHORT-NAME>COM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE UUID="15bf8a68-5812-4f82-9637-f96d323ce1c8">
+          <SHORT-NAME>VCOS2</SHORT-NAME>
+          <AR-PACKAGES>
+            <AR-PACKAGE UUID="722ec759-bf53-40ea-80b6-26678857665a">
+              <SHORT-NAME>CFG</SHORT-NAME>
+              <AR-PACKAGES>
+                <AR-PACKAGE UUID="9972792b-17dd-40a0-a094-79914d36563b">
+                  <SHORT-NAME>WORKFLOW</SHORT-NAME>
+                  <AR-PACKAGES>
+                    <AR-PACKAGE UUID="f97a4c44-23de-45c6-9a47-c1458bc2d599">
+                      <SHORT-NAME>SYSDESC</SHORT-NAME>
+                      <AR-PACKAGES>
+                        <AR-PACKAGE UUID="2b78f559-08fa-4cc1-b633-1170ea785d8b">
+                          <SHORT-NAME>SYNC</SHORT-NAME>
+                          <ELEMENTS>
+                            <END-TO-END-PROTECTION-SET UUID="96d880ad-771f-4dc2-8155-fb7b068e7841">
+                              <SHORT-NAME>E2EPROTECTIONSET</SHORT-NAME>
+                              <ANNOTATIONS>
+                                <ANNOTATION>
+                                  <ANNOTATION-ORIGIN>VCOS2:Flattener</ANNOTATION-ORIGIN>
+                                </ANNOTATION>
+                              </ANNOTATIONS>
+                            </END-TO-END-PROTECTION-SET>
+                            <PORT-INTERFACE-MAPPING-SET UUID="11ad3ba3-d200-4ea2-85eb-ddb6ac80d49c">
+                              <SHORT-NAME>PORTINTERFACEMAPPINGSET</SHORT-NAME>
+                              <ANNOTATIONS>
+                                <ANNOTATION>
+                                  <ANNOTATION-ORIGIN>VCOS2:Flattener</ANNOTATION-ORIGIN>
+                                </ANNOTATION>
+                              </ANNOTATIONS>
+                            </PORT-INTERFACE-MAPPING-SET>
+                            <SYSTEM UUID="d2349d90-673b-4649-8458-ab04a94e10d1">
+                              <SHORT-NAME>SYSTEM</SHORT-NAME>
+                              <CATEGORY>ECU_EXTRACT</CATEGORY>
+                              <FIBEX-ELEMENTS/>
+                              <MAPPINGS>
+                                <SYSTEM-MAPPING UUID="6beb18e2-7351-492c-a98b-38e1c28dde6c">
+                                  <SHORT-NAME>MAPPINGS</SHORT-NAME>
+                                  <DATA-MAPPINGS>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/AswComponents/MinimalSystem/CmdControl</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_CmdControl/LedCmd</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/LedCmd</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/AswComponents/MinimalSystem/CmdControl</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_CmdControl/TargetMode</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/TargetMode</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/AswComponents/MinimalSystem/CmdControl</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_CmdControl/Cmd_AliveCnt</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/Cmd_AliveCnt</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/AswComponents/MinimalSystem/CmdControl</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_CmdControl/PwmDuty</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/PwmDuty</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/AswComponents/MinimalSystem/CmdControl</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_CmdControl/Cmd_Crc8</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/Cmd_Crc8</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/AswComponents/MinimalSystem/EcuStatus</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_EcuStatus/ECU_State</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/ECU_State</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/AswComponents/MinimalSystem/EcuStatus</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_EcuStatus/ECU_AliveCnt</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/ECU_AliveCnt</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/AswComponents/MinimalSystem/EcuStatus</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_EcuStatus/Temperature</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/Temperature</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/AswComponents/MinimalSystem/EcuStatus</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_EcuStatus/SupplyVoltage</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/SupplyVoltage</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/AswComponents/MinimalSystem/EcuStatus</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_EcuStatus/FaultFlags</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/FaultFlags</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/AswComponents/MinimalSystem/FaultEvent</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_FaultEvent/FaultCode</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/FaultCode</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                      <DATA-ELEMENT-IREF>
+                                        <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</CONTEXT-COMPONENT-REF>
+                                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/AswComponents/MinimalSystem/FaultEvent</CONTEXT-PORT-REF>
+                                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AswInterfaces/If_FaultEvent/FaultActive</TARGET-DATA-PROTOTYPE-REF>
+                                      </DATA-ELEMENT-IREF>
+                                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/Signal/FaultActive</SYSTEM-SIGNAL-REF>
+                                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                                  </DATA-MAPPINGS>
+                                  <SW-MAPPINGS>
+                                    <SWC-TO-ECU-MAPPING>
+                                      <SHORT-NAME>SwcToEcuMapping</SHORT-NAME>
+                                      <COMPONENT-IREFS>
+                                        <COMPONENT-IREF>
+                                          <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                          <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/MinimalSystem</TARGET-COMPONENT-REF>
+                                        </COMPONENT-IREF>
+                                        <COMPONENT-IREF>
+                                          <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/SYSTEM/COMPOSITIONTYPE</CONTEXT-COMPOSITION-REF>
+                                          <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/AswComponents/COMPOSITIONTYPE/IoHwAb</TARGET-COMPONENT-REF>
+                                        </COMPONENT-IREF>
+                                      </COMPONENT-IREFS>
+                                      <ECU-INSTANCE-REF DEST="ECU-INSTANCE">/ECU/DUT</ECU-INSTANCE-REF>
+                                    </SWC-TO-ECU-MAPPING>
+                                  </SW-MAPPINGS>
+                                </SYSTEM-MAPPING>
+                              </MAPPINGS>
+                              <ROOT-SOFTWARE-COMPOSITIONS>
+                                <ROOT-SW-COMPOSITION-PROTOTYPE UUID="3758ec95-bf8f-4d6b-90b7-6b31b9970db2">
+                                  <SHORT-NAME>COMPOSITIONTYPE</SHORT-NAME>
+                                  <FLAT-MAP-REF DEST="FLAT-MAP">/COM/VCOS2/CFG/WORKFLOW/SYSDESC/SYNC/FLATMAP</FLAT-MAP-REF>
+                                  <SOFTWARE-COMPOSITION-TREF DEST="COMPOSITION-SW-COMPONENT-TYPE">/AswComponents/COMPOSITIONTYPE</SOFTWARE-COMPOSITION-TREF>
+                                </ROOT-SW-COMPOSITION-PROTOTYPE>
+                              </ROOT-SOFTWARE-COMPOSITIONS>
+                            </SYSTEM>
+                          </ELEMENTS>
+                          <AR-PACKAGES>
+                            <AR-PACKAGE UUID="59810ec4-39ae-4c46-bfd5-6449f9c99be1">
+                              <SHORT-NAME>REFERENCES</SHORT-NAME>
+                              <ADMIN-DATA>
+                                <SDGS>
+                                  <SDG GID="VCOS2:CfgReferences"/>
+                                </SDGS>
+                              </ADMIN-DATA>
+                            </AR-PACKAGE>
+                          </AR-PACKAGES>
+                        </AR-PACKAGE>
+                      </AR-PACKAGES>
+                    </AR-PACKAGE>
+                  </AR-PACKAGES>
+                </AR-PACKAGE>
+              </AR-PACKAGES>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE UUID="2B824AD1-465F-45FB-8557-EF84CEE517E1">
+      <SHORT-NAME>DataTypes</SHORT-NAME>
+      <ELEMENTS/>
+    </AR-PACKAGE>
+    <AR-PACKAGE UUID="B2957B8C-BF66-45C4-B435-9D45EBE4B231">
+      <SHORT-NAME>PortInterfaces</SHORT-NAME>
+      <ELEMENTS/>
+    </AR-PACKAGE>
+    <AR-PACKAGE UUID="05BD2D03-D093-4219-BC61-A424FF1B80B1">
+      <SHORT-NAME>ComponentTypes</SHORT-NAME>
+      <ELEMENTS>
+        <SWC-IMPLEMENTATION UUID="ABECE932-3717-4086-BB61-17DE86059D7E">
+          <SHORT-NAME>MinimalSystem_Impl</SHORT-NAME>
+          <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AswComponents/MinimalSystem/MinimalSystem_IB</BEHAVIOR-REF>
+        </SWC-IMPLEMENTATION>
+        <SWC-IMPLEMENTATION UUID="17DDC377-9679-4A3D-9AD3-B72ACD26DF1A">
+          <SHORT-NAME>IoHwAb_Impl</SHORT-NAME>
+          <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AswComponents/IoHwAb/IoHwAb_IB</BEHAVIOR-REF>
+        </SWC-IMPLEMENTATION>
+      </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE UUID="B9B6CF30-90B1-4AFF-9171-AAD508FF8F49">
+      <SHORT-NAME>ECUCompositionTypes</SHORT-NAME>
+      <ELEMENTS>
+        <COMPOSITION-SW-COMPONENT-TYPE UUID="01D247E6-0759-4ED9-A385-C344E5B4DB5E">
+          <SHORT-NAME>EcuSwCompositionStub</SHORT-NAME>
+          <PORTS/>
+          <COMPONENTS/>
+          <CONNECTORS/>
+        </COMPOSITION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

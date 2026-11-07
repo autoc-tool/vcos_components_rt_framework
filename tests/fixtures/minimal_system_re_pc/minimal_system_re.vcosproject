@@ -1,0 +1,67 @@
+{
+    "project": "minimal_system_re",
+    "version": "V0.1.0-DEV",
+    "system_version": "V0.1.0-DEV",
+    "compiler": "vs20xx",
+    "target": "PC_Common",
+    "mode": "release",
+    "generation_limit": "Error",
+    "modules_info": {
+        "enabled_module_list": [
+            "EcuC",
+            "Os",
+            "Can",
+            "CanIf",
+            "PduR",
+            "Com",
+            "CanSM",
+            "ComM",
+            "Memmap",
+            "Crc",
+            "Rte"
+        ],
+        "codegen_module_list": [],
+        "validation_module_list": [],
+        "codegen_swc_list": [],
+        "bsw_ecuc_hash": {}
+    },
+    "config_path": "",
+    "gendata_path": "gen_data",
+    "is_add_channel_name": false,
+    "path": {
+        "config_base_path": "config",
+        "swc_template_path": "../../apps/asw_swc",
+        "bswcallout_path": "../../apps/bsw_user_callout",
+        "import_plugin_path_list": [
+            "../../../../components/autoc_mcal/Can"
+        ],
+        "user_plugin_output_path": "config/gen_data",
+        "config_file_path": {
+            "ldf": {
+                "num": 0,
+                "list": {}
+            },
+            "dbc": {
+                "num": 0,
+                "list": {}
+            },
+            "cdd": {
+                "num": 0,
+                "single_signal": true,
+                "list": {}
+            },
+            "swc": "",
+            "eb_arxml": ""
+        },
+        "studio_path": "../../../../vcos_studio/configurator",
+        "application_path": "../../apps",
+        "internal_behavior_path": "config/internal_behavior",
+        "log_path": "log",
+        "service_component_path": "config/service_components",
+        "compiler_path": "",
+        "mcal_path": "../../../../components/autoc_mcal",
+        "mcal_gendata_path": "",
+        "system_path": "../../../../components/configs/configurator_plug_in"
+    },
+    "MCAL_VERSION": "PC_MCAL_0.1.0"
+}
